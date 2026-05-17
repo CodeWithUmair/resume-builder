@@ -1,0 +1,13 @@
+{
+  "name": "resume-builder",
+  "version": "1.0.0",
+  "description": "Generates formatted .docx resumes from JSON input — used by Claude Code job automation",
+  "main": "build-resume.js",
+  "scripts": {
+    "build": "node build-resume.js",
+    "test": "node build-resume.js --data '{\"summary\":\"Test resume output.\",\"skills\":{\"frontend\":\"Next.js, React, TypeScript\"},\"experience\":[{\"company\":\"Test Co\",\"role\":\"Engineer\",\"dates\":\"2024–Present\",\"bullets\":[\"Built test system\"]}],\"projects\":[]}' --output ./test-output/resume.docx"
+  },
+  "dependencies": {
+    "docx": "^9.5.1"
+  }
+}
