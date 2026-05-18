@@ -18,6 +18,7 @@ const {
   BorderStyle,
   UnderlineType,
   TabStopType,
+  ExternalHyperlink,
 } = require("docx");
 const fs = require("fs");
 const path = require("path");
@@ -96,26 +97,19 @@ const children = [
       bottom: { style: BorderStyle.SINGLE, size: 3, color: "AAAAAA", space: 3 },
     },
     children: [
-      new TextRun({
-        text: "codewithumair867@gmail.com",
-        font: FONT,
-        size: 19,
-        color: BLUE,
-        underline: { type: UnderlineType.SINGLE },
+      new ExternalHyperlink({
+        link: "mailto:codewithumair867@gmail.com",
+        children: [new TextRun({ text: "codewithumair867@gmail.com", font: FONT, size: 19, color: BLUE, underline: { type: UnderlineType.SINGLE } })]
       }),
-      new TextRun({
-        text: "   ·   umairamir.com",
-        font: FONT,
-        size: 19,
-        color: BLUE,
-        underline: { type: UnderlineType.SINGLE },
+      new TextRun({ text: "   ·   ", font: FONT, size: 19, color: "888888" }),
+      new ExternalHyperlink({
+        link: "https://umairamir.com",
+        children: [new TextRun({ text: "umairamir.com", font: FONT, size: 19, color: BLUE, underline: { type: UnderlineType.SINGLE } })]
       }),
-      new TextRun({
-        text: "   ·   linkedin.com/in/umair-amir",
-        font: FONT,
-        size: 19,
-        color: BLUE,
-        underline: { type: UnderlineType.SINGLE },
+      new TextRun({ text: "   ·   ", font: FONT, size: 19, color: "888888" }),
+      new ExternalHyperlink({
+        link: "https://linkedin.com/in/umair-amir",
+        children: [new TextRun({ text: "linkedin.com/in/umair-amir", font: FONT, size: 19, color: BLUE, underline: { type: UnderlineType.SINGLE } })]
       }),
     ],
   }),
@@ -182,12 +176,9 @@ children.push(
   new Paragraph({
     spacing: { before: 40, after: 0 },
     children: [
-      new TextRun({
-        text: "umairamir.com",
-        font: FONT,
-        size: 20,
-        color: BLUE,
-        underline: { type: UnderlineType.SINGLE },
+      new ExternalHyperlink({
+        link: "https://umairamir.com",
+        children: [new TextRun({ text: "umairamir.com", font: FONT, size: 20, color: BLUE, underline: { type: UnderlineType.SINGLE } })]
       }),
       new TextRun({
         text: "  ·  +92-316-8946190",
