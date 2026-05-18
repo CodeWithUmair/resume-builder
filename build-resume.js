@@ -5,7 +5,8 @@
 
 const {
   Document, Packer, Paragraph, TextRun, AlignmentType,
-  BorderStyle, LevelFormat, UnderlineType, TabStopType
+  BorderStyle, LevelFormat, UnderlineType, TabStopType,
+  ExternalHyperlink
 } = require('docx');
 const fs = require('fs');
 const path = require('path');
@@ -63,7 +64,6 @@ const sectionHeader = (text) => new Paragraph({
 });
 
 const bulletPara = (text) => {
-  // Bold text between ** markers
   const runs = [];
   const parts = text.split(/(\*\*[^*]+\*\*)/g);
   parts.forEach(part => {
@@ -113,17 +113,33 @@ const children = [
     spacing: { before: 0, after: 70 },
     children: [new TextRun({ text: title, font: FONT, size: 22, color: GRAY })]
   }),
-  // Contact bar
+  // Contact bar — single row with real clickable hyperlinks
   new Paragraph({
     alignment: AlignmentType.CENTER,
     spacing: { before: 0, after: 0 },
     border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: "AAAAAA", space: 2 } },
     children: [
-      new TextRun({ text: phone, font: FONT, size: 19, color: "333333" }),
-      new TextRun({ text: "   ·   " + email, font: FONT, size: 19, color: BLUE, underline: { type: UnderlineType.SINGLE } }),
-      new TextRun({ text: "   ·   " + linkedin, font: FONT, size: 19, color: BLUE, underline: { type: UnderlineType.SINGLE } }),
-      new TextRun({ text: "   ·   " + github, font: FONT, size: 19, color: BLUE, underline: { type: UnderlineType.SINGLE } }),
-      new TextRun({ text: "   ·   " + portfolio, font: FONT, size: 19, color: BLUE, underline: { type: UnderlineType.SINGLE } }),
+      new TextRun({ text: phone, font: FONT, size: 16, color: "333333" }),
+      new TextRun({ text: "  ·  ", font: FONT, size: 16, color: "888888" }),
+      new ExternalHyperlink({
+        link: "mailto:" + email,
+        children: [new TextRun({ text: email, font: FONT, size: 16, color: BLUE, underline: { type: UnderlineType.SINGLE } })]
+      }),
+      new TextRun({ text: "  ·  ", font: FONT, size: 16, color: "888888" }),
+      new ExternalHyperlink({
+        link: "https://" + linkedin,
+        children: [new TextRun({ text: linkedin, font: FONT, size: 16, color: BLUE, underline: { type: UnderlineType.SINGLE } })]
+      }),
+      new TextRun({ text: "  ·  ", font: FONT, size: 16, color: "888888" }),
+      new ExternalHyperlink({
+        link: "https://" + github,
+        children: [new TextRun({ text: github, font: FONT, size: 16, color: BLUE, underline: { type: UnderlineType.SINGLE } })]
+      }),
+      new TextRun({ text: "  ·  ", font: FONT, size: 16, color: "888888" }),
+      new ExternalHyperlink({
+        link: "https://" + portfolio,
+        children: [new TextRun({ text: portfolio, font: FONT, size: 16, color: BLUE, underline: { type: UnderlineType.SINGLE } })]
+      }),
     ]
   }),
   gap(0, 80),
@@ -203,7 +219,7 @@ const doc = new Document({
     properties: {
       page: {
         size: { width: 12240, height: 15840 },
-        margin: { top: 1080, right: 1080, bottom: 1080, left: 1080 }
+        margin: { top: 1080, right: 720, bottom: 1080, left: 720 }
       }
     },
     children
