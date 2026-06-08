@@ -13,19 +13,24 @@ const path = require('path');
 
 // ── Parse CLI args ──────────────────────────────────────────────
 const args = process.argv.slice(2);
-const dataIdx = args.indexOf('--data');
-const outIdx  = args.indexOf('--output');
+const dataIdx     = args.indexOf('--data');
+const dataFileIdx = args.indexOf('--data-file');
+const outIdx      = args.indexOf('--output');
 
-if (dataIdx === -1) {
-  console.error('Usage: node build-resume.js --data \'{"...":"..."}\' --output ./resume.docx');
+if (dataIdx === -1 && dataFileIdx === -1) {
+  console.error('Usage: node build-resume.js --data-file ./data.json --output ./resume.docx');
   process.exit(1);
 }
 
 let data;
 try {
-  data = JSON.parse(args[dataIdx + 1]);
+  if (dataFileIdx !== -1) {
+    data = JSON.parse(fs.readFileSync(args[dataFileIdx + 1], 'utf8'));
+  } else {
+    data = JSON.parse(args[dataIdx + 1]);
+  }
 } catch (e) {
-  console.error('Invalid JSON in --data:', e.message);
+  console.error('Invalid JSON input:', e.message);
   process.exit(1);
 }
 

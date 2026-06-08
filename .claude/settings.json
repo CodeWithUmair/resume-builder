@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(node -e \"require\\('googleapis'\\); require\\('@anthropic-ai/sdk'\\); require\\('dotenv'\\); console.log\\('All dependencies OK'\\)\")",
+      "Bash(Get-ChildItem -Exclude node_modules,.git)",
+      "Bash(Select-Object Name, Mode)",
+      "Bash(echo '{\"skills\":{\"frontend\":\"Next.js, React\"},\"experience\":[{\"company\":\"Test\",\"role\":\"Engineer\",\"dates\":\"2024\",\"bullets\":[\"Built things\"]}],\"projects\":[]}')",
+      "Bash(node build-resume.js --data-file /tmp/test-data.json --output /tmp/test-resume.docx)"
+    ]
+  }
+}

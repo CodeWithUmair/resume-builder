@@ -1,13 +1,20 @@
 {
   "name": "resume-builder",
   "version": "1.0.0",
-  "description": "Generates formatted .docx resumes from JSON input — used by Claude Code job automation",
+  "description": "Generates formatted .docx resumes from JSON input — syncs from Google Drive job folders",
   "main": "build-resume.js",
   "scripts": {
-    "build": "node build-resume.js",
-    "test": "node build-resume.js --data '{\"summary\":\"Test resume output.\",\"skills\":{\"frontend\":\"Next.js, React, TypeScript\"},\"experience\":[{\"company\":\"Test Co\",\"role\":\"Engineer\",\"dates\":\"2024–Present\",\"bullets\":[\"Built test system\"]}],\"projects\":[]}' --output ./test-output/resume.docx"
+    "auth":    "node auth-setup.js",
+    "list":    "node sync.js --list",
+    "sync":    "node sync.js",
+    "sync:remote":   "node sync.js --folder Remote",
+    "sync:pakistan": "node sync.js --folder Pakistan",
+    "build":   "node build-resume.js"
   },
   "dependencies": {
-    "docx": "^9.5.1"
+    "@anthropic-ai/sdk": "^0.54.0",
+    "docx": "^9.5.1",
+    "dotenv": "^16.4.0",
+    "googleapis": "^144.0.0"
   }
 }
