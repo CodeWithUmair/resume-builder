@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Interview Topics — Umair (Senior Full-Stack AI Engineer)</title>
+<style>
+  body {
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+    line-height: 1.6;
+    color: #1a1a1a;
+    background: #fff;
+  }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: #666; font-size: 14px; margin: 0 0 24px; }
+  h2 {
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #0a7a5c;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 6px;
+    margin: 34px 0 12px;
+  }
+  ol { margin: 0; padding-left: 22px; }
+  li { margin: 10px 0; }
+  .search {
+    color: #0a7a5c;
+    font-size: 12px;
+    font-weight: 500;
+    text-decoration: none;
+    margin-left: 8px;
+    padding: 2px 10px;
+    border: 1px solid rgba(10,122,92,.35);
+    background: rgba(10,122,92,.08);
+    border-radius: 999px;
+    white-space: nowrap;
+    transition: background .15s;
+  }
+  .search:hover { background: rgba(10,122,92,.2); }
+  .count { color: #999; font-weight: normal; font-size: 12px; float: right; }
+  .tip {
+    background: #f0fdf9;
+    border-left: 3px solid #0a7a5c;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #444;
+    margin: 0 0 24px;
+    border-radius: 0 4px 4px 0;
+  }
+  @media (prefers-color-scheme: dark) {
+    body { background: #0d1117; color: #cdd9e5; }
+    .sub { color: #8b98a5; }
+    h2 { color: #3fb950; border-color: #21262d; }
+    .tip { background: #10231c; color: #a8b3bd; border-color: #3fb950; }
+    .search { color: #3fb950; border-color: rgba(63,185,80,.3); background: rgba(63,185,80,.1); }
+    .search:hover { background: rgba(63,185,80,.22); }
+  }
+</style>
+</head>
+<body>
+
+<h1>Senior Full-Stack AI Engineer — Interview Topics</h1>
+<p class="sub">Umair Amir · Just the questions/topics. Detailed answers live in interview-prep.html.</p>
+
+<div class="tip">
+  Each topic has one <b>Search →</b> button that opens a single <b>Claude</b> session, framed for a <b>senior</b> role.
+  In that one chat you can do it all — learn the topic deeply, get <b>interviewed</b> on it, and run a
+  <b>code-review / bug-hunt</b> drill. Just say "interview me", "review drill", or "go deeper" anytime to switch.
+</div>
+
+<h2>1 · JavaScript &amp; TypeScript <span class="count">8</span></h2>
+<ol>
+  <li>Explain the JavaScript event loop — call stack, microtask queue, macrotask queue</li>
+  <li>Promise.all vs Promise.allSettled vs Promise.race vs Promise.any — with real use cases</li>
+  <li>interface vs type in TypeScript — real differences, not just "use interface for objects"</li>
+  <li>TypeScript utility types — Partial, Omit, Pick, Record, ReturnType, Parameters, Awaited</li>
+  <li>Closures — what they are and the 3 patterns you actually use</li>
+  <li>Async/await internals — how it compiles, error handling patterns, parallel vs sequential</li>
+  <li>TypeScript generics — constrained generics, keyof, conditional types, infer</li>
+  <li>this binding — the 4 rules and arrow functions</li>
+</ol>
+
+<h2>2 · Node.js <span class="count">5</span></h2>
+<ol>
+  <li>Node.js event loop phases — what runs in what order?</li>
+  <li>Memory leaks in Node.js — causes, detection, fixes</li>
+  <li>Worker Threads vs Cluster — when to use each</li>
+  <li>Streams — when you need them and how pipes work</li>
+  <li>process.nextTick vs setImmediate vs setTimeout(fn, 0)</li>
+</ol>
+
+<h2>3 · NestJS <span class="count">6</span></h2>
+<ol>
+  <li>Guards vs Interceptors vs Pipes vs Middleware — execution order and what each does</li>
+  <li>Dependency Injection in NestJS — how the IoC container actually works</li>
+  <li>BullMQ in NestJS — producer, consumer, retries, events</li>
+  <li>Global exception filters — standardize error responses across the whole app</li>
+  <li>NestJS lifecycle hooks — onModuleInit, onApplicationBootstrap, shutdown</li>
+  <li>NestJS microservices — transports, patterns, hybrid apps</li>
+</ol>
+
+<h2>4 · REST &amp; GraphQL <span class="count">5</span></h2>
+<ol>
+  <li>HTTP methods, idempotency, and status codes every senior engineer knows</li>
+  <li>N+1 problem in GraphQL and DataLoader — how batching works</li>
+  <li>REST API design best practices — versioning, pagination, filtering</li>
+  <li>REST vs GraphQL — when to choose each, real trade-offs</li>
+  <li>WebSockets vs SSE vs Long Polling — when to use each</li>
+</ol>
+
+<h2>5 · PostgreSQL <span class="count">5</span></h2>
+<ol>
+  <li>Index types — B-tree, GIN, GiST, BRIN — and compound index left-prefix rule</li>
+  <li>EXPLAIN ANALYZE — how to read it and fix slow queries</li>
+  <li>ACID, transactions, and isolation levels — what they mean in practice</li>
+  <li>Row Level Security (RLS) for multi-tenant SaaS</li>
+  <li>CTEs, window functions, and advanced queries</li>
+</ol>
+
+<h2>6 · MongoDB <span class="count">4</span></h2>
+<ol>
+  <li>Aggregation pipeline — all key stages with a real example</li>
+  <li>Embed vs Reference — schema design decision framework</li>
+  <li>MongoDB indexes — compound, TTL, text, sparse, partial</li>
+  <li>Change streams — real-time events from MongoDB</li>
+</ol>
+
+<h2>7 · Redis &amp; Caching <span class="count">4</span></h2>
+<ol>
+  <li>Redis data structures — which to use when</li>
+  <li>Rate limiting with Redis — fixed window and sliding window</li>
+  <li>Cache patterns — cache-aside, write-through, invalidation, stampede prevention</li>
+  <li>Redis Pub/Sub — real-time notifications across multiple servers</li>
+</ol>
+
+<h2>8 · Docker &amp; CI/CD <span class="count">4</span></h2>
+<ol>
+  <li>Production Dockerfile — multi-stage build, layer caching, security</li>
+  <li>Docker Compose for local dev environment</li>
+  <li>GitHub Actions — CI/CD pipeline with test, build, deploy</li>
+  <li>Nginx reverse proxy — config with SSL, SSE, and load balancing</li>
+</ol>
+
+<h2>9 · Authentication &amp; Security <span class="count">4</span></h2>
+<ol>
+  <li>JWT access + refresh token rotation — production pattern</li>
+  <li>OAuth2 Authorization Code Flow — step by step</li>
+  <li>OWASP Top 10 for Node.js/NestJS — what to know and fix</li>
+  <li>RBAC in NestJS — roles, custom decorator, guard</li>
+</ol>
+
+<h2>10 · System Design <span class="count">5</span></h2>
+<ol>
+  <li>Design a URL Shortener — schema, flow, scale</li>
+  <li>Design a Real-Time Notification System</li>
+  <li>Design a Multi-Tenant SaaS Backend</li>
+  <li>Design a Rate Limiter — algorithms and trade-offs</li>
+  <li>Horizontal vs Vertical scaling — when to choose each</li>
+</ol>
+
+<h2>11 · AI &amp; LLM Engineering <span class="count">4</span></h2>
+<ol>
+  <li>LangGraph — state machines, nodes, conditional routing, persistence</li>
+  <li>RAG architecture — ingestion pipeline, chunking, retrieval, generation</li>
+  <li>MCP (Model Context Protocol) — what it is and how to build a server</li>
+  <li>LLM Streaming — SSE from NestJS to React with real-time display</li>
+</ol>
+
+<h2>12 · React &amp; Next.js <span class="count">5</span></h2>
+<ol>
+  <li>useMemo vs useCallback — when to use and when NOT to</li>
+  <li>SSR vs SSG vs ISR vs CSR — Next.js App Router patterns</li>
+  <li>React Server Components — zero JS bundle, direct DB access, composition pattern</li>
+  <li>RTK Query — caching, invalidation, optimistic updates</li>
+  <li>React performance — rendering, memo, virtualization, lazy loading</li>
+</ol>
+
+<h2>13 · Data Structures &amp; Algorithms <span class="count">6</span></h2>
+<ol>
+  <li>Hash Map pattern — Two Sum, Group Anagrams, frequency counting</li>
+  <li>Sliding Window — longest/shortest subarray with constraint</li>
+  <li>BFS and DFS — trees and graphs with real patterns</li>
+  <li>Binary Search — classic and "search on condition" pattern</li>
+  <li>Dynamic Programming — Coin Change and the DP thought process</li>
+  <li>Stack — Valid Parentheses, Monotonic Stack, Next Greater Element</li>
+</ol>
+
+<script>
+  // ── Senior-level prompt engine ──
+  // Each topic gets ONE button that opens Claude with a single heavy prompt covering
+  // deep learning + mock interview + code-review, all steerable inside that one session.
+  // Shared background so Claude pitches every answer at a senior bar and knows who I am.
+  var BG =
+    "Background: I have 4 years of full-stack experience across WordPress, Shopify, " +
+    "Next.js, and Node.js - real, interconnected production work. My focused backend/Node " +
+    "time is more recent, but I've worked across the whole stack and know a lot in practice. " +
+    "What I need now is my CORE fundamentals razor-sharp and articulated at a senior level for " +
+    "interviews. Treat me as a senior engineer and push me hard - do not dumb it down or pad " +
+    "with basics I already know. Be concrete, use real code, and challenge me.";
+
+  function masterPrompt(q) {
+    return "I'm preparing for senior/expert-level software engineering interviews, and I want to MASTER one topic in this single session. " + BG + "\n\n" +
+      "Topic: \"" + q + "\"\n\n" +
+      "This is one long, interactive session. I want to work this topic three ways. Unless I tell you otherwise, go in this order and PAUSE for me at every interactive step - do not dump everything at once:\n\n" +
+      "PART 1 - TEACH ME (deeply):\n" +
+      "- The mental model and how it ACTUALLY works under the hood, not surface definitions.\n" +
+      "- Production-grade code examples with trade-offs, edge cases, and the common pitfalls that bite people.\n" +
+      "- How to ARTICULATE it in an interview: what a senior answer sounds like versus a junior one, plus the 20% of this topic that shows up in 80% of interviews.\n\n" +
+      "PART 2 - INTERVIEW ME (strict):\n" +
+      "- Switch into a strict senior interviewer. Ask sharp questions one at a time, WAIT for my answer, grade it 0-10 at a senior bar, tell me exactly what a senior answer adds that I missed, then push a harder follow-up. Escalate difficulty each round.\n\n" +
+      "PART 3 - CODE REVIEW / BUG HUNT:\n" +
+      "- Show me a realistic code snippet on this topic that looks fine but hides 3-5 issues (correctness, performance, security, design). Do NOT reveal them. Ask me to find them, WAIT, then walk through each one like a senior reviewer with the fix. Push me on edge cases, concurrency/race conditions, failure modes, and security.\n\n" +
+      "Rules: treat me as a senior - push hard, do not dumb it down or pad with basics I already know. Be concrete, use real code. Keep this session going until I can teach the topic back, pass the interview, AND catch the bugs. At any point I can say 'interview me', 'review drill', 'go deeper', or 'next' to jump between modes. Start with Part 1 now, then check in with me before moving to Part 2.";
+  }
+
+  function mkBtn(cls, label, prompt) {
+    var a = document.createElement("a");
+    a.className = cls;
+    a.href = "https://claude.ai/new?q=" + encodeURIComponent(prompt);
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.textContent = label;
+    return a;
+  }
+
+  document.querySelectorAll("ol li").forEach(function (li) {
+    var q = li.textContent.trim();
+    li.appendChild(mkBtn("search", "Search →", masterPrompt(q)));
+  });
+</script>
+
+</body>
+</html>

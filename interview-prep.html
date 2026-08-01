@@ -1,0 +1,3598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Senior SWE Interview Prep — Umair</title>
+<style>
+:root{
+  --bg:#0D1117;--sf:#161B22;--sf2:#1C2128;--bd:#21262D;
+  --tx:#CDD9E5;--mu:#7D8590;--dm:#484F58;
+  --ac:#00C8A0;--ag:rgba(0,200,160,.13);
+  --wm:#F5A623;--wb:rgba(245,166,35,.11);
+  --bl:#58A6FF;--bb:rgba(88,166,255,.11);
+  --gn:#3FB950;--gb:rgba(63,185,80,.11);
+  --sw:258px;--r:6px;
+}
+@media(prefers-color-scheme:light){:root{
+  --bg:#F6F8FA;--sf:#FFFFFF;--sf2:#EEF2F6;--bd:#D1DBE8;
+  --tx:#1B2433;--mu:#626D7A;--dm:#B0BAC8;
+  --ac:#007A62;--ag:rgba(0,122,98,.09);
+  --wm:#B45309;--wb:rgba(180,83,9,.09);
+  --bl:#1D4ED8;--bb:rgba(29,78,216,.09);
+  --gn:#15803D;--gb:rgba(21,128,61,.09);
+}}
+:root[data-theme=dark]{--bg:#0D1117;--sf:#161B22;--sf2:#1C2128;--bd:#21262D;--tx:#CDD9E5;--mu:#7D8590;--dm:#484F58;--ac:#00C8A0;--ag:rgba(0,200,160,.13);--wm:#F5A623;--wb:rgba(245,166,35,.11);--bl:#58A6FF;--bb:rgba(88,166,255,.11);--gn:#3FB950;--gb:rgba(63,185,80,.11);}
+:root[data-theme=light]{--bg:#F6F8FA;--sf:#FFFFFF;--sf2:#EEF2F6;--bd:#D1DBE8;--tx:#1B2433;--mu:#626D7A;--dm:#B0BAC8;--ac:#007A62;--ag:rgba(0,122,98,.09);--wm:#B45309;--wb:rgba(180,83,9,.09);--bl:#1D4ED8;--bb:rgba(29,78,216,.09);--gn:#15803D;--gb:rgba(21,128,61,.09);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.65;display:flex;min-height:100vh}
+code,pre,.mono{font-family:'SF Mono','Cascadia Code',Consolas,'Courier New',monospace}
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:var(--sw);background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;z-index:100;overflow:hidden}
+.sb-top{padding:18px 16px 14px;border-bottom:1px solid var(--bd)}
+.sb-logo{font-family:'SF Mono',Consolas,monospace;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin-bottom:12px}
+.pb-wrap{background:var(--sf2);border-radius:3px;height:3px;overflow:hidden;margin-bottom:5px}
+.pb{height:100%;background:var(--ac);transition:width .3s ease;border-radius:3px}
+.pb-lbl{font-size:11px;color:var(--mu);font-family:'SF Mono',Consolas,monospace}
+.sb-search{padding:10px 14px;border-bottom:1px solid var(--bd)}
+.sb-search input{width:100%;background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:6px 10px;color:var(--tx);font-size:12px;outline:none;transition:border-color .2s}
+.sb-search input:focus{border-color:var(--ac)}
+.sb-search input::placeholder{color:var(--dm)}
+.sb-nav{flex:1;overflow-y:auto;padding:6px 0 20px}
+.nav-a{display:flex;align-items:center;gap:8px;padding:7px 16px;font-size:12.5px;color:var(--mu);cursor:pointer;border-left:2px solid transparent;transition:all .15s;text-decoration:none}
+.nav-a:hover{color:var(--tx);background:var(--sf2)}
+.nav-a.active{color:var(--ac);border-left-color:var(--ac);background:var(--ag)}
+.nav-ct{font-size:10px;font-family:'SF Mono',Consolas,monospace;color:var(--dm);margin-left:auto}
+.nav-a.active .nav-ct{color:var(--ac)}
+/* MAIN */
+.main{margin-left:var(--sw);flex:1;padding:36px 42px}
+.section{margin-bottom:52px}
+.sec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding-bottom:11px;border-bottom:1px solid var(--bd)}
+.sec-tag{font-family:'SF Mono',Consolas,monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ac);background:var(--ag);padding:3px 8px;border-radius:3px}
+.sec-title{font-size:17px;font-weight:600}
+.sec-ct{margin-left:auto;font-size:11px;color:var(--mu);font-family:'SF Mono',Consolas,monospace}
+/* CARDS */
+.qa-list{display:flex;flex-direction:column;gap:7px}
+details.qa-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;transition:border-color .2s}
+details.qa-card[open]{border-color:var(--ac)}
+details.qa-card.done{opacity:.62}
+details.qa-card summary{list-style:none;cursor:pointer;display:flex;align-items:flex-start;gap:9px;padding:11px 13px;user-select:none}
+details.qa-card summary::-webkit-details-marker{display:none}
+details.qa-card[open] summary{border-bottom:1px solid var(--bd)}
+.chk{width:15px;height:15px;border:1.5px solid var(--dm);border-radius:3px;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;transition:all .15s;cursor:pointer;background:transparent}
+.chk.on{background:var(--gn);border-color:var(--gn);color:var(--sf)}
+.badge{font-size:9px;font-weight:700;letter-spacing:.07em;padding:2px 6px;border-radius:3px;flex-shrink:0;margin-top:2px;font-family:'SF Mono',Consolas,monospace}
+.badge.H{color:var(--wm);background:var(--wb)}
+.badge.M{color:var(--bl);background:var(--bb)}
+.qa-q{font-size:13px;font-weight:500;line-height:1.5;flex:1}
+details.qa-card.done .qa-q{text-decoration:line-through;text-decoration-color:var(--dm)}
+.chev{color:var(--dm);font-size:11px;margin-left:4px;transition:transform .2s;flex-shrink:0;padding-top:3px}
+details.qa-card[open] .chev{transform:rotate(90deg)}
+/* ANSWER BODY */
+.qa-body{padding:16px 14px 16px 38px}
+.qa-body p{margin-bottom:10px;font-size:13px;line-height:1.75}
+.qa-body p:last-child{margin-bottom:0}
+.qa-body ul,.qa-body ol{margin:8px 0 10px 20px}
+.qa-body li{margin-bottom:5px;font-size:13px;line-height:1.65}
+.qa-body h4{font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--mu);margin:14px 0 7px}
+.qa-body strong{color:var(--tx);font-weight:600}
+pre.cb{background:var(--sf2);border:1px solid var(--bd);border-left:3px solid var(--ac);border-radius:var(--r);padding:12px 14px;margin:10px 0;font-family:'SF Mono','Cascadia Code',Consolas,monospace;font-size:11.5px;line-height:1.75;overflow-x:auto;white-space:pre;tab-size:2}
+.note{background:var(--ag);border-left:3px solid var(--ac);padding:9px 12px;border-radius:0 var(--r) var(--r) 0;font-size:12.5px;margin:10px 0;line-height:1.65}
+.warn{background:var(--wb);border-left:3px solid var(--wm);padding:9px 12px;border-radius:0 var(--r) var(--r) 0;font-size:12.5px;margin:10px 0;line-height:1.65}
+.tbl{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--sf2);padding:6px 10px;text-align:left;font-weight:600;border:1px solid var(--bd);color:var(--mu);font-size:10.5px;letter-spacing:.04em;text-transform:uppercase}
+td{padding:6px 10px;border:1px solid var(--bd);font-family:'SF Mono',Consolas,monospace;font-size:11.5px}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--dm);border-radius:3px}
+::-webkit-scrollbar-track{background:transparent}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+@media(max-width:768px){.sidebar{transform:translateX(-100%);transition:transform .25s}.sidebar.open{transform:translateX(0)}.main{margin-left:0;padding:16px 18px}.mob{display:flex!important}}
+.mob{position:fixed;top:10px;left:10px;z-index:200;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:7px 10px;cursor:pointer;font-size:15px;display:none}
+</style>
+</head>
+<body>
+
+<button class="mob" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+<aside class="sidebar">
+  <div class="sb-top">
+    <div class="sb-logo">// interview prep</div>
+    <div class="pb-wrap"><div class="pb" id="pb" style="width:0%"></div></div>
+    <div class="pb-lbl" id="pbl">0 / 0 done</div>
+  </div>
+  <div class="sb-search"><input type="text" id="si" placeholder="Search questions…" autocomplete="off"></div>
+  <nav class="sb-nav">
+    <a class="nav-a" href="#js" onclick="go('js')">JS &amp; TypeScript<span class="nav-ct" id="nc-js"></span></a>
+    <a class="nav-a" href="#nodejs" onclick="go('nodejs')">Node.js<span class="nav-ct" id="nc-nodejs"></span></a>
+    <a class="nav-a" href="#nestjs" onclick="go('nestjs')">NestJS<span class="nav-ct" id="nc-nestjs"></span></a>
+    <a class="nav-a" href="#rest" onclick="go('rest')">REST &amp; GraphQL<span class="nav-ct" id="nc-rest"></span></a>
+    <a class="nav-a" href="#postgres" onclick="go('postgres')">PostgreSQL<span class="nav-ct" id="nc-postgres"></span></a>
+    <a class="nav-a" href="#mongo" onclick="go('mongo')">MongoDB<span class="nav-ct" id="nc-mongo"></span></a>
+    <a class="nav-a" href="#redis" onclick="go('redis')">Redis &amp; Caching<span class="nav-ct" id="nc-redis"></span></a>
+    <a class="nav-a" href="#docker" onclick="go('docker')">Docker &amp; CI/CD<span class="nav-ct" id="nc-docker"></span></a>
+    <a class="nav-a" href="#auth" onclick="go('auth')">Auth &amp; Security<span class="nav-ct" id="nc-auth"></span></a>
+    <a class="nav-a" href="#design" onclick="go('design')">System Design<span class="nav-ct" id="nc-design"></span></a>
+    <a class="nav-a" href="#ai" onclick="go('ai')">AI &amp; LLM<span class="nav-ct" id="nc-ai"></span></a>
+    <a class="nav-a" href="#react" onclick="go('react')">React &amp; Next.js<span class="nav-ct" id="nc-react"></span></a>
+    <a class="nav-a" href="#dsa" onclick="go('dsa')">DSA<span class="nav-ct" id="nc-dsa"></span></a>
+  </nav>
+</aside>
+
+<main class="main">
+
+<!-- ═══════════════════════════════════════════════════ JS & TYPESCRIPT -->
+<section class="section" id="js">
+  <div class="sec-hdr">
+    <span class="sec-tag">JS/TS</span>
+    <span class="sec-title">JavaScript &amp; TypeScript</span>
+    <span class="sec-ct">8 questions</span>
+  </div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c0">
+      <summary><span class="chk" onclick="td(event,'c0')"></span><span class="badge H">HIGH</span><span class="qa-q">Explain the JavaScript event loop — call stack, microtask queue, macrotask queue</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>JavaScript is <strong>single-threaded</strong> — one call stack, one thing at a time. The event loop is the mechanism that allows async operations to run without blocking. It continuously checks: "is the call stack empty? If yes, take the next task."</p>
+        <p>There are two types of queues, processed in strict order every loop tick:</p>
+        <ul>
+          <li><strong>Microtask queue</strong> — drains <em>completely</em> after every task before moving on. Includes: Promise .then/.catch/.finally, async/await continuations, queueMicrotask(). <code>process.nextTick</code> in Node.js runs even before Promises.</li>
+          <li><strong>Macrotask queue</strong> — one task per loop iteration. Includes: setTimeout, setInterval, setImmediate, I/O callbacks, UI rendering events.</li>
+        </ul>
+        <pre class="cb">console.log('A');              // 1. sync → call stack immediately
+setTimeout(() => console.log('B'), 0); // macrotask queue
+Promise.resolve()
+  .then(() => console.log('C'))        // microtask queue
+  .then(() => console.log('D'));       // another microtask (chained)
+console.log('E');              // 2. sync → call stack immediately
+
+// Output: A → E → C → D → B
+//
+// Why C and D before B?
+// After sync code (A, E) finishes, microtask queue drains fully (C, D)
+// THEN the macrotask queue processes B (setTimeout)</pre>
+        <pre class="cb">// Node.js addition: process.nextTick fires before Promises
+process.nextTick(() => console.log('nextTick'));
+Promise.resolve().then(() => console.log('promise'));
+setTimeout(() => console.log('setTimeout'), 0);
+
+// Output: nextTick → promise → setTimeout
+//
+// process.nextTick has its own queue that runs before Promises
+// Overusing nextTick can starve I/O — use Promise.resolve() instead</pre>
+        <div class="note"><strong>Interview tip:</strong> Draw the three boxes (call stack / microtask queue / macrotask queue) and trace execution step by step. Interviewers love seeing you narrate this visually.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c1">
+      <summary><span class="chk" onclick="td(event,'c1')"></span><span class="badge H">HIGH</span><span class="qa-q">Promise.all vs Promise.allSettled vs Promise.race vs Promise.any — with real use cases</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th>Method</th><th>Resolves when</th><th>Rejects when</th><th>Real use case</th></tr>
+          <tr><td>Promise.all</td><td>ALL resolve</td><td>FIRST rejection</td><td>Parallel DB queries that all must succeed</td></tr>
+          <tr><td>Promise.allSettled</td><td>ALL complete</td><td>Never rejects</td><td>Send notifications to 100 users — some may fail, process all results</td></tr>
+          <tr><td>Promise.race</td><td>FIRST settles</td><td>FIRST rejects</td><td>Request timeout: race fetch vs setTimeout</td></tr>
+          <tr><td>Promise.any</td><td>FIRST fulfills</td><td>ALL reject (AggregateError)</td><td>Try 3 CDN mirrors, use whichever responds first</td></tr>
+        </table></div>
+        <pre class="cb">// Promise.all — fails fast if any fails
+const [user, orders, settings] = await Promise.all([
+  usersRepo.findById(userId),
+  ordersRepo.findByUser(userId),
+  settingsRepo.findByUser(userId),
+]);
+// If any throws, the whole thing throws immediately
+
+// Promise.allSettled — process everything regardless of failures
+const results = await Promise.allSettled([
+  sendEmail(user1),
+  sendEmail(user2),
+  sendEmail(user3),
+]);
+results.forEach((result, i) => {
+  if (result.status === 'fulfilled') console.log(`user${i+1}: sent`);
+  else console.error(`user${i+1}: failed`, result.reason);
+});
+
+// Promise.race — timeout pattern (very common in production)
+async function fetchWithTimeout(url: string, ms = 5000) {
+  const timeout = new Promise&lt;never&gt;((_, reject) =>
+    setTimeout(() => reject(new Error(`Timeout after ${ms}ms`)), ms)
+  );
+  return Promise.race([fetch(url), timeout]);
+}
+
+// Promise.any — first success wins
+const data = await Promise.any([
+  fetch('https://cdn1.example.com/data.json'),
+  fetch('https://cdn2.example.com/data.json'),
+  fetch('https://cdn3.example.com/data.json'),
+]);</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c2">
+      <summary><span class="chk" onclick="td(event,'c2')"></span><span class="badge H">HIGH</span><span class="qa-q">interface vs type in TypeScript — real differences, not just "use interface for objects"</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>Both define shapes but with important differences that matter in real codebases:</p>
+        <pre class="cb">// 1. Declaration merging — only interface supports this
+//    Useful for extending third-party types (e.g., Express Request)
+interface Request {
+  user?: AuthUser; // extend Express's Request type
+}
+// type can't be reopened — second declaration = error
+
+// 2. interface extends is cleaner than type intersection
+interface Animal { name: string }
+interface Dog extends Animal { breed: string }
+
+type AnimalType = { name: string }
+type DogType = AnimalType &amp; { breed: string } // same result, different syntax
+
+// 3. type can do things interface can't: unions, mapped types, conditionals
+type ID = string | number;
+type Status = 'active' | 'inactive' | 'banned';
+type NonNullable&lt;T&gt; = T extends null | undefined ? never : T;
+type EventHandlers = { [K in keyof Events]: (...args: any[]) => void };
+
+// 4. In NestJS/class-validator — always use class for DTOs, not interface/type
+//    Classes exist at runtime; interfaces are erased by TypeScript
+class CreateUserDto {
+  @IsEmail() email: string;
+  @MinLength(8) password: string;
+}
+// interface CreateUserDto { email: string } ← can't use decorators</pre>
+        <div class="note"><strong>Rule:</strong> Use <code>interface</code> for object shapes you export, extend, or add to third-party libs. Use <code>type</code> for unions, intersections, computed/mapped types, and aliases for primitives.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c3">
+      <summary><span class="chk" onclick="td(event,'c3')"></span><span class="badge H">HIGH</span><span class="qa-q">TypeScript utility types — Partial, Omit, Pick, Record, ReturnType, Parameters, Awaited</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// The ones you'll use every day in NestJS/Next.js:
+
+// Omit: DTO from entity (remove server-generated fields)
+type CreateUserDto = Omit&lt;User, 'id' | 'createdAt' | 'updatedAt'&gt;;
+
+// Partial: update DTO (all fields optional)
+type UpdateUserDto = Partial&lt;Pick&lt;User, 'name' | 'email' | 'bio'&gt;&gt;;
+
+// Record: object map with typed keys and values
+type RolePermissions = Record&lt;Role, Permission[]&gt;;
+type UserMap = Record&lt;string, User&gt;;
+
+// ReturnType: extract return type from a function
+const createHandler = () =&gt; ({ status: 'ok', data: null });
+type HandlerResult = ReturnType&lt;typeof createHandler&gt;; // { status: string, data: null }
+
+// Awaited: unwrap Promise (essential for async functions)
+type UserData = Awaited&lt;ReturnType&lt;typeof fetchUser&gt;&gt;;
+
+// Parameters: extract function param types
+function createOrder(userId: string, items: Item[], promo?: string) {}
+type OrderParams = Parameters&lt;typeof createOrder&gt;;
+// [userId: string, items: Item[], promo?: string]
+
+// Extract / Exclude: filter union types
+type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+type ReadMethods = Extract&lt;HttpMethod, 'GET'&gt;;          // 'GET'
+type WriteMethods = Exclude&lt;HttpMethod, 'GET'&gt;;         // 'POST' | 'PUT' | ...
+
+// NonNullable: remove null | undefined
+type MaybeUser = User | null | undefined;
+type DefiniteUser = NonNullable&lt;MaybeUser&gt;; // User</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c4">
+      <summary><span class="chk" onclick="td(event,'c4')"></span><span class="badge H">HIGH</span><span class="qa-q">Closures — what they are and the 3 patterns you actually use</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>A closure is a function that <strong>retains access to variables from its outer scope</strong> even after that outer function has returned. In JavaScript, every function creates a closure over the variables in scope when it was defined.</p>
+        <pre class="cb">// Pattern 1: Private state / data encapsulation
+function createRateLimiter(maxCalls: number, windowMs: number) {
+  let calls = 0;
+  let windowStart = Date.now();
+
+  return function isAllowed(): boolean {
+    const now = Date.now();
+    if (now - windowStart &gt; windowMs) { calls = 0; windowStart = now; }
+    return ++calls &lt;= maxCalls;
+  };
+}
+const limiter = createRateLimiter(10, 60000);
+limiter(); // true, true, ... false after 10 calls/minute
+
+// Pattern 2: Memoization (caching expensive results)
+function memoize&lt;T&gt;(fn: (...args: any[]) => T) {
+  const cache = new Map&lt;string, T&gt;();
+  return (...args: any[]): T =&gt; {
+    const key = JSON.stringify(args);
+    if (cache.has(key)) return cache.get(key)!;
+    const result = fn(...args);
+    cache.set(key, result);
+    return result;
+  };
+}
+const expensiveCalc = memoize((n: number) =&gt; { /* heavy work */ return n * n; });
+
+// Pattern 3: Partial application / currying
+const multiply = (a: number) =&gt; (b: number) =&gt; a * b;
+const double = multiply(2);   // double(5) = 10
+const triple = multiply(3);   // triple(5) = 15
+
+// Real NestJS use: factory providers use closures
+const createDatabaseConfig = (env: string) =&gt; ({
+  provide: 'DB_CONFIG',
+  useValue: { host: env === 'prod' ? 'prod-db' : 'localhost' }
+});</pre>
+        <div class="warn"><strong>Common gotcha:</strong> Closures in loops capture the variable reference, not the value. Use <code>let</code> (block-scoped) or an IIFE to fix classic loop closure bugs.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c5">
+      <summary><span class="chk" onclick="td(event,'c5')"></span><span class="badge H">HIGH</span><span class="qa-q">Async/await internals — how it compiles, error handling patterns, parallel vs sequential</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>async/await is syntax sugar over Promises. <code>async function</code> always returns a Promise. <code>await</code> pauses the function and schedules the continuation as a microtask — it does not block the thread.</p>
+        <pre class="cb">// Sequential vs Parallel — biggest performance mistake in interviews
+// SEQUENTIAL (bad when ops are independent): ~600ms total
+async function sequential() {
+  const user = await fetchUser(id);      // 200ms
+  const orders = await fetchOrders(id);  // 200ms
+  const prefs = await fetchPrefs(id);    // 200ms
+  return { user, orders, prefs };
+}
+
+// PARALLEL (correct): ~200ms total
+async function parallel() {
+  const [user, orders, prefs] = await Promise.all([
+    fetchUser(id),
+    fetchOrders(id),
+    fetchPrefs(id),
+  ]);
+  return { user, orders, prefs };
+}
+
+// Error handling: try/catch vs .catch()
+// Option 1: try/catch in the async function
+async function getUser(id: string) {
+  try {
+    const user = await usersRepo.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+    return user;
+  } catch (err) {
+    if (err instanceof NotFoundException) throw err;
+    throw new InternalServerErrorException('DB error');
+  }
+}
+
+// Option 2: Wrapper to avoid try/catch repetition
+async function safe&lt;T&gt;(promise: Promise&lt;T&gt;): Promise&lt;[T, null] | [null, Error]&gt; {
+  try { return [await promise, null]; }
+  catch (err) { return [null, err as Error]; }
+}
+
+const [user, err] = await safe(usersRepo.findById(id));
+if (err) { /* handle */ }
+
+// IMPORTANT: unhandled promise rejections crash Node.js
+// Always await, .catch(), or wrap in try/catch</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c6">
+      <summary><span class="chk" onclick="td(event,'c6')"></span><span class="badge H">HIGH</span><span class="qa-q">TypeScript generics — constrained generics, keyof, conditional types, infer</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Basic: function works with any type but stays type-safe
+function first&lt;T&gt;(arr: T[]): T | undefined { return arr[0]; }
+
+// Constrained: T must have certain shape
+function findById&lt;T extends { id: string }&gt;(items: T[], id: string): T | undefined {
+  return items.find(item =&gt; item.id === id);
+}
+
+// keyof: type-safe property access
+function getProperty&lt;T, K extends keyof T&gt;(obj: T, key: K): T[K] {
+  return obj[key];
+}
+const name = getProperty(user, 'name'); // string — fully typed
+
+// Conditional types: if T extends U then X else Y
+type IsArray&lt;T&gt; = T extends any[] ? true : false;
+type IsString&lt;T&gt; = T extends string ? true : false;
+
+// infer: extract type from conditional context
+type UnpackArray&lt;T&gt; = T extends (infer Item)[] ? Item : T;
+type Str = UnpackArray&lt;string[]&gt;;  // string
+type Num = UnpackArray&lt;number&gt;;    // number (not an array, returned as-is)
+
+type UnpackPromise&lt;T&gt; = T extends Promise&lt;infer R&gt; ? R : T;
+type UserData = UnpackPromise&lt;Promise&lt;User&gt;&gt;; // User
+
+// Real NestJS pattern: generic repository base
+abstract class BaseRepository&lt;T extends { id: string }, CreateDto, UpdateDto&gt; {
+  abstract findById(id: string): Promise&lt;T | null&gt;;
+  abstract create(dto: CreateDto): Promise&lt;T&gt;;
+  abstract update(id: string, dto: UpdateDto): Promise&lt;T&gt;;
+  abstract delete(id: string): Promise&lt;void&gt;;
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c7">
+      <summary><span class="chk" onclick="td(event,'c7')"></span><span class="badge M">MED</span><span class="qa-q">this binding — the 4 rules and arrow functions</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p><code>this</code> in JavaScript is determined at call-time, not definition-time (except arrow functions, which capture <code>this</code> lexically at definition-time).</p>
+        <pre class="cb">// Rule 1: Default — global object (undefined in strict mode)
+function show() { console.log(this); }
+show(); // window (browser) or undefined (strict)
+
+// Rule 2: Implicit — the object before the dot
+const user = { name: 'Umair', greet() { console.log(this.name); } };
+user.greet(); // 'Umair' — this = user
+const { greet } = user;
+greet(); // undefined — this = global (lost the object context!)
+
+// Rule 3: Explicit — bind/call/apply
+greet.call(user);     // 'Umair'
+greet.apply(user);    // 'Umair'
+const bound = greet.bind(user);
+bound();              // 'Umair' always
+
+// Rule 4: Arrow functions — lexical this (no own this)
+class Timer {
+  count = 0;
+
+  startBroken() {
+    setInterval(function() {
+      this.count++; // WRONG: this = undefined (strict) or global
+    }, 1000);
+  }
+
+  startFixed() {
+    setInterval(() =&gt; {
+      this.count++; // CORRECT: this = Timer instance (lexical)
+    }, 1000);
+  }
+}
+
+// Class methods lose 'this' when destructured — common bug
+class UserService {
+  name = 'service';
+  getName() { return this.name; }
+}
+const svc = new UserService();
+const { getName } = svc;
+getName(); // TypeError: Cannot read property 'name' of undefined
+// Fix: use arrow function property or .bind(svc)</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ NODE.JS -->
+<section class="section" id="nodejs">
+  <div class="sec-hdr">
+    <span class="sec-tag">Node.js</span>
+    <span class="sec-title">Node.js Deep Dive</span>
+    <span class="sec-ct">5 questions</span>
+  </div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c8">
+      <summary><span class="chk" onclick="td(event,'c8')"></span><span class="badge H">HIGH</span><span class="qa-q">Node.js event loop phases — what runs in what order?</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>Node's event loop has 6 phases. Between <em>every</em> phase, it drains the microtask queues completely: first <code>process.nextTick</code>, then Promise callbacks.</p>
+        <pre class="cb">// Phase order each tick:
+// 1. timers         — setTimeout / setInterval thresholds expired
+// 2. pending I/O    — I/O errors deferred from previous loop
+// 3. idle/prepare   — internal Node use only
+// 4. poll           — retrieve new I/O events; blocks here if queue empty
+// 5. check          — setImmediate callbacks
+// 6. close          — socket.on('close'), cleanup callbacks
+//
+// Between each phase: process.nextTick queue, then Promise queue</pre>
+        <pre class="cb">// Trace this in an interview:
+setImmediate(() =&gt; console.log('setImmediate'));   // phase 5
+setTimeout(() =&gt; console.log('setTimeout'), 0);   // phase 1
+process.nextTick(() =&gt; console.log('nextTick'));   // microtask (before Promises)
+Promise.resolve().then(() =&gt; console.log('promise')); // microtask
+
+// Output: nextTick → promise → setTimeout → setImmediate
+// (setTimeout vs setImmediate order is non-deterministic outside I/O context)
+
+// Inside an I/O callback: setImmediate always before setTimeout
+const fs = require('fs');
+fs.readFile('file.txt', () =&gt; {
+  setTimeout(() =&gt; console.log('timeout'), 0);
+  setImmediate(() =&gt; console.log('immediate'));
+  // Output: immediate → timeout (guaranteed in I/O context)
+});</pre>
+        <div class="note"><strong>Why does poll phase block?</strong> If there are no pending timers or setImmediate calls, Node waits at poll for new I/O events. This is why Node is efficient at I/O — it's not burning CPU polling.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c9">
+      <summary><span class="chk" onclick="td(event,'c9')"></span><span class="badge H">HIGH</span><span class="qa-q">Memory leaks in Node.js — causes, detection, fixes</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>Memory leaks in Node cause heap growth over time until the process crashes or slows down. They're subtle because GC handles most memory — leaks happen when objects are referenced longer than they should be.</p>
+        <pre class="cb">// CAUSE 1: Unbounded event listeners (most common)
+class EventService {
+  private emitter = new EventEmitter();
+
+  // LEAK: adds a new listener every time this method is called
+  subscribe(handler: (data: any) =&gt; void) {
+    this.emitter.on('data', handler); // never removed!
+  }
+
+  // FIX: return an unsubscribe function
+  subscribe(handler: (data: any) =&gt; void) {
+    this.emitter.on('data', handler);
+    return () =&gt; this.emitter.off('data', handler);
+  }
+}
+// Node.js warns at &gt;10 listeners on same event — don't silence this warning
+
+// CAUSE 2: Cache without eviction
+const cache = new Map&lt;string, User&gt;(); // grows forever!
+
+// FIX: LRU cache or manual TTL
+import LRU from 'lru-cache';
+const cache = new LRU({ max: 500, ttl: 1000 * 60 * 10 }); // max 500 entries, 10min TTL
+
+// CAUSE 3: Closures retaining large objects in long-lived functions
+function processRequests() {
+  const LARGE_CONFIG = loadEntireConfigFile(); // 100MB!
+  return (req) =&gt; {
+    // LARGE_CONFIG is held in closure forever
+    return LARGE_CONFIG.get(req.path);
+  };
+}
+
+// CAUSE 4: Uncleared intervals/timeouts
+const interval = setInterval(() =&gt; doWork(), 5000);
+// FIX:
+clearInterval(interval); // when component/service is destroyed</pre>
+        <pre class="cb">// DETECTION: monitor heap size
+const v8 = require('v8');
+setInterval(() =&gt; {
+  const heap = v8.getHeapStatistics();
+  const used = Math.round(heap.used_heap_size / 1024 / 1024);
+  const total = Math.round(heap.total_heap_size / 1024 / 1024);
+  console.log(`Heap: ${used}MB / ${total}MB`);
+}, 10000);
+
+// For production: use clinic.js or node --inspect + Chrome DevTools heap snapshots
+// Take 2 snapshots (before and after suspected leak), compare retained objects</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c10">
+      <summary><span class="chk" onclick="td(event,'c10')"></span><span class="badge H">HIGH</span><span class="qa-q">Worker Threads vs Cluster — when to use each</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th></th><th>Worker Threads</th><th>Cluster</th></tr>
+          <tr><td>Model</td><td>Threads in same process</td><td>Fork separate OS processes</td></tr>
+          <tr><td>Memory</td><td>SharedArrayBuffer possible</td><td>Separate memory spaces</td></tr>
+          <tr><td>Best for</td><td>CPU-heavy: image/PDF/crypto/parsing</td><td>HTTP server scaling across CPU cores</td></tr>
+          <tr><td>Port sharing</td><td>Doesn't help</td><td>All workers share same port via IPC</td></tr>
+          <tr><td>Crash isolation</td><td>Worker crash can affect main</td><td>Worker crash = one process, others continue</td></tr>
+        </table></div>
+        <pre class="cb">// Worker Threads: CPU-heavy task (NestJS example)
+// image-processor.worker.ts
+import { workerData, parentPort } from 'worker_threads';
+import sharp from 'sharp';
+
+const { imagePath, outputPath } = workerData;
+await sharp(imagePath).resize(800, 600).toFile(outputPath);
+parentPort!.postMessage({ done: true, outputPath });
+
+// image.service.ts
+async resizeImage(imagePath: string): Promise&lt;string&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    const worker = new Worker('./image-processor.worker.js', {
+      workerData: { imagePath, outputPath: `${imagePath}-resized.jpg` }
+    });
+    worker.on('message', ({ outputPath }) =&gt; resolve(outputPath));
+    worker.on('error', reject);
+  });
+}
+
+// Cluster: scale NestJS across all CPU cores
+// main.ts
+import cluster from 'cluster';
+import os from 'os';
+
+if (cluster.isPrimary) {
+  const numCPUs = os.cpus().length;
+  for (let i = 0; i &lt; numCPUs; i++) cluster.fork();
+  cluster.on('exit', (worker) =&gt; {
+    console.log(`Worker ${worker.process.pid} died — forking replacement`);
+    cluster.fork();
+  });
+} else {
+  // Each worker runs the full NestJS app
+  const app = await NestFactory.create(AppModule);
+  await app.listen(3000);
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c11">
+      <summary><span class="chk" onclick="td(event,'c11')"></span><span class="badge H">HIGH</span><span class="qa-q">Streams — when you need them and how pipes work</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>Streams process data in chunks instead of loading everything into memory. Critical when handling large files, database exports, HTTP uploads/downloads, or real-time data.</p>
+        <pre class="cb">// Without streams: entire file loaded into memory — crashes on large files
+const data = fs.readFileSync('10gb-export.csv'); // OutOfMemory!
+
+// With streams: processes one chunk at a time, constant memory usage
+import { pipeline } from 'stream/promises';
+import { createReadStream, createWriteStream } from 'fs';
+import { createGzip } from 'zlib';
+
+// Compress a large file:
+await pipeline(
+  createReadStream('large-file.csv'),  // Readable stream
+  createGzip(),                         // Transform stream
+  createWriteStream('output.csv.gz')   // Writable stream
+);
+// Memory usage stays constant regardless of file size
+
+// NestJS: stream large DB result directly to HTTP response
+@Get('export')
+async exportCsv(@Res() res: Response) {
+  res.setHeader('Content-Type', 'text/csv');
+  res.setHeader('Content-Disposition', 'attachment; filename="export.csv"');
+
+  const cursor = this.db.collection('orders')
+    .find({ status: 'completed' })
+    .stream(); // MongoDB cursor as a readable stream
+
+  // Pipe DB result → CSV transform → HTTP response
+  cursor
+    .pipe(new MongoToCsvTransform())
+    .pipe(res);
+
+  cursor.on('error', (err) =&gt; {
+    res.status(500).end('Export failed');
+  });
+}</pre>
+        <div class="note"><strong>Backpressure:</strong> When the writable stream is slower than the readable stream, use <code>pipe()</code> or check the return value of <code>write()</code> — if it returns <code>false</code>, pause the readable stream until <code>drain</code> fires.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c12">
+      <summary><span class="chk" onclick="td(event,'c12')"></span><span class="badge M">MED</span><span class="qa-q">process.nextTick vs setImmediate vs setTimeout(fn, 0)</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Execution order:
+// 1. process.nextTick — runs at end of current phase, before ANYTHING else
+//    (including other microtasks like Promises)
+// 2. Promise.then — microtask, after nextTick queue drains
+// 3. setImmediate  — runs in 'check' phase of event loop
+// 4. setTimeout(0) — runs in 'timers' phase (at least 1ms minimum delay)
+
+// When to use each:
+// process.nextTick: "do this before any I/O in this loop iteration"
+//   → emit events after constructor finishes (ensure listeners are attached)
+class EventEmitterExample extends EventEmitter {
+  constructor() {
+    super();
+    process.nextTick(() =&gt; this.emit('ready')); // defer until constructor done
+  }
+}
+
+// setImmediate: "do this after current I/O events are handled"
+//   → break up CPU-heavy work to not starve I/O
+function heavyWork(items: any[], callback: () =&gt; void) {
+  function processChunk(index: number) {
+    const end = Math.min(index + 100, items.length);
+    for (let i = index; i &lt; end; i++) process(items[i]);
+    if (end &lt; items.length) setImmediate(() =&gt; processChunk(end));
+    else callback();
+  }
+  processChunk(0);
+}
+
+// setTimeout(fn, 0): "schedule for later, give other tasks a chance"
+//   → lowest priority, non-deterministic when other timers exist</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ NESTJS -->
+<section class="section" id="nestjs">
+  <div class="sec-hdr">
+    <span class="sec-tag">NestJS</span>
+    <span class="sec-title">NestJS Architecture</span>
+    <span class="sec-ct">6 questions</span>
+  </div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c13">
+      <summary><span class="chk" onclick="td(event,'c13')"></span><span class="badge H">HIGH</span><span class="qa-q">Guards vs Interceptors vs Pipes vs Middleware — execution order and what each does</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>These 4 layers process every request in a strict pipeline. Knowing <em>when</em> each runs is what interviewers test.</p>
+        <pre class="cb">// FULL REQUEST PIPELINE:
+// Incoming Request
+//   → Middleware       (before routing, Express-compatible)
+//   → Guards           (can access, returns boolean)
+//   → Interceptors     (before handler — can transform request)
+//   → Pipes            (validate & transform params/body)
+//   → Route Handler    (your @Get/@Post method)
+//   → Interceptors     (after handler — can transform response)
+//   → Exception Filter (catches any error thrown anywhere above)</pre>
+        <div class="tbl"><table>
+          <tr><th>Layer</th><th>Purpose</th><th>Can do</th><th>Cannot do</th></tr>
+          <tr><td>Middleware</td><td>Logging, CORS, body parse</td><td>Modify req/res, next()</td><td>Access route metadata</td></tr>
+          <tr><td>Guard</td><td>Auth check, RBAC</td><td>Read ExecutionContext, throw</td><td>Modify request body</td></tr>
+          <tr><td>Pipe</td><td>Validate &amp; transform DTO</td><td>Transform input, throw ValidationError</td><td>Access response</td></tr>
+          <tr><td>Interceptor</td><td>Response mapping, timing, cache</td><td>Wrap handler in Observable, modify response</td><td>Decide auth (that's Guard's job)</td></tr>
+        </table></div>
+        <pre class="cb">// GUARD: returns true (allow) or throws (deny)
+@Injectable()
+export class JwtAuthGuard extends AuthGuard('jwt') {
+  canActivate(ctx: ExecutionContext) {
+    return super.canActivate(ctx); // validates JWT, attaches user to req
+  }
+}
+
+// INTERCEPTOR: before + after the handler
+@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  intercept(ctx: ExecutionContext, next: CallHandler): Observable&lt;any&gt; {
+    const start = Date.now();
+    const req = ctx.switchToHttp().getRequest();
+
+    return next.handle().pipe(
+      tap(() =&gt; console.log(`${req.method} ${req.url} — ${Date.now() - start}ms`)),
+      map(data =&gt; ({ success: true, data, timestamp: new Date() })), // wrap response
+      catchError(err =&gt; {
+        console.error('Request failed', err);
+        return throwError(() =&gt; err);
+      })
+    );
+  }
+}
+
+// PIPE: validate DTO before handler runs
+// class-validator + class-transformer work through the built-in ValidationPipe
+app.useGlobalPipes(new ValidationPipe({
+  whitelist: true,        // strip unknown properties
+  forbidNonWhitelisted: true, // throw if unknown properties present
+  transform: true,        // auto-convert types (string "123" → number 123)
+}));</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c14">
+      <summary><span class="chk" onclick="td(event,'c14')"></span><span class="badge H">HIGH</span><span class="qa-q">Dependency Injection in NestJS — how the IoC container actually works</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>NestJS uses <strong>reflect-metadata</strong> — TypeScript decorators emit type metadata at compile time. NestJS reads that metadata at bootstrap to figure out what each class needs in its constructor, then resolves the full dependency tree.</p>
+        <pre class="cb">// How NestJS knows what to inject:
+// @Injectable() + TypeScript's emitDecoratorMetadata = true
+// TypeScript emits: Reflect.metadata('design:paramtypes', [UsersRepo, MailService])
+// NestJS reads this to know "UsersService needs UsersRepo and MailService"
+
+@Injectable()
+export class UsersService {
+  constructor(
+    // NestJS resolves these from the module's providers array
+    private readonly repo: UsersRepository,
+    private readonly mail: MailService,
+    @InjectRepository(User) private typeormRepo: Repository&lt;User&gt;, // TypeORM
+    @Inject('CONFIG') private config: AppConfig,   // custom token injection
+  ) {}
+}
+
+@Module({
+  imports: [TypeOrmModule.forFeature([User])],
+  providers: [
+    UsersService,
+    UsersRepository,
+    MailService,
+    { provide: 'CONFIG', useValue: appConfig }, // custom token
+    // Factory provider: compute value asynchronously
+    {
+      provide: 'REDIS_CLIENT',
+      useFactory: async (config: ConfigService) =&gt; {
+        return createClient({ url: config.get('REDIS_URL') });
+      },
+      inject: [ConfigService],
+    },
+  ],
+  exports: [UsersService], // makes UsersService available to importing modules
+})
+export class UsersModule {}
+
+// Provider scopes:
+@Injectable({ scope: Scope.DEFAULT })   // Singleton (default, shared app-wide)
+@Injectable({ scope: Scope.REQUEST })   // New instance per HTTP request (has access to req)
+@Injectable({ scope: Scope.TRANSIENT }) // New instance every time it's injected</pre>
+        <div class="note"><strong>Circular dependency fix:</strong> If A depends on B and B depends on A, use <code>forwardRef(() =&gt; B)</code> in A's constructor and vice versa. Better: refactor to extract shared logic into a third service C.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c15">
+      <summary><span class="chk" onclick="td(event,'c15')"></span><span class="badge H">HIGH</span><span class="qa-q">BullMQ in NestJS — producer, consumer, retries, events</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// 1. Setup: register queues in module
+@Module({
+  imports: [
+    BullModule.forRootAsync({
+      useFactory: (config: ConfigService) =&gt; ({
+        connection: { url: config.get('REDIS_URL') }
+      }),
+      inject: [ConfigService],
+    }),
+    BullModule.registerQueue(
+      { name: 'email' },
+      { name: 'notifications' },
+    ),
+  ],
+})
+export class AppModule {}
+
+// 2. Producer: add jobs to the queue
+@Injectable()
+export class EmailService {
+  constructor(@InjectQueue('email') private queue: Queue) {}
+
+  async sendWelcome(userId: string) {
+    const job = await this.queue.add('welcome-email', { userId }, {
+      attempts: 3,                                  // retry up to 3 times
+      backoff: { type: 'exponential', delay: 2000}, // 2s, 4s, 8s delays
+      delay: 5000,                                  // start after 5 seconds
+      priority: 1,                                  // lower = higher priority
+      removeOnComplete: { count: 100 },             // keep last 100 completed
+      removeOnFail: { age: 24 * 3600 },             // remove failed after 24h
+    });
+    return job.id;
+  }
+
+  async scheduleReminder(userId: string, sendAt: Date) {
+    const delay = sendAt.getTime() - Date.now();
+    await this.queue.add('reminder', { userId }, { delay });
+  }
+}
+
+// 3. Consumer: process jobs (runs in separate worker process ideally)
+@Processor('email')
+export class EmailProcessor extends WorkerHost {
+  constructor(private mailer: MailerService, private users: UsersService) {
+    super();
+  }
+
+  @Process('welcome-email')
+  async handleWelcome(job: Job&lt;{ userId: string }&gt;) {
+    const user = await this.users.findById(job.data.userId);
+    await this.mailer.send({ to: user.email, template: 'welcome' });
+    return { sent: true, email: user.email }; // stored in job.returnvalue
+  }
+
+  @Process('reminder')
+  async handleReminder(job: Job) {
+    await job.updateProgress(50); // update progress (0-100)
+    await sendReminderEmail(job.data.userId);
+    await job.updateProgress(100);
+  }
+
+  @OnWorkerEvent('failed')
+  onFailed(job: Job, error: Error) {
+    console.error(`Job ${job.id} (${job.name}) failed after ${job.attemptsMade} attempts:`, error.message);
+  }
+
+  @OnWorkerEvent('completed')
+  onCompleted(job: Job) {
+    console.log(`Job ${job.id} completed in ${job.processedOn! - job.timestamp}ms`);
+  }
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c16">
+      <summary><span class="chk" onclick="td(event,'c16')"></span><span class="badge H">HIGH</span><span class="qa-q">Global exception filters — standardize error responses across the whole app</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Global exception filter: catches EVERYTHING
+@Catch()
+export class GlobalExceptionFilter implements ExceptionFilter {
+  private readonly logger = new Logger(GlobalExceptionFilter.name);
+
+  catch(exception: unknown, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const res = ctx.getResponse&lt;Response&gt;();
+    const req = ctx.getRequest&lt;Request&gt;();
+
+    let status = HttpStatus.INTERNAL_SERVER_ERROR;
+    let message: string | string[] = 'Internal server error';
+    let code = 'INTERNAL_ERROR';
+
+    if (exception instanceof HttpException) {
+      status = exception.getStatus();
+      const body = exception.getResponse();
+      message = typeof body === 'string' ? body : (body as any).message;
+      code = (body as any).error || exception.constructor.name;
+    } else if (exception instanceof QueryFailedError) {
+      // TypeORM DB errors
+      status = HttpStatus.BAD_REQUEST;
+      if ((exception as any).code === '23505') {
+        message = 'Duplicate entry — resource already exists';
+        code = 'DUPLICATE_ENTRY';
+      }
+    }
+
+    // Don't log 4xx errors as errors — they're client mistakes
+    if (status &gt;= 500) {
+      this.logger.error(`${req.method} ${req.url}`, exception);
+    }
+
+    res.status(status).json({
+      statusCode: status,
+      code,
+      message,
+      path: req.url,
+      timestamp: new Date().toISOString(),
+    });
+  }
+}
+
+// Register in main.ts OR in AppModule (use AppModule for DI access)
+// main.ts:
+app.useGlobalFilters(new GlobalExceptionFilter());
+
+// AppModule (can inject services):
+@Module({ providers: [{ provide: APP_FILTER, useClass: GlobalExceptionFilter }] })
+export class AppModule {}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c17">
+      <summary><span class="chk" onclick="td(event,'c17')"></span><span class="badge M">MED</span><span class="qa-q">NestJS lifecycle hooks — onModuleInit, onApplicationBootstrap, shutdown</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Lifecycle order on startup:
+// 1. Module constructors
+// 2. onModuleInit() — all providers initialized, deps resolved
+// 3. onApplicationBootstrap() — all modules initialized, server not listening yet
+// 4. app.listen() — server starts accepting requests
+
+// Lifecycle order on shutdown (SIGTERM / app.close()):
+// 1. onModuleDestroy()
+// 2. beforeApplicationShutdown(signal)
+// 3. app.close() called
+// 4. onApplicationShutdown(signal)
+
+@Injectable()
+export class DatabaseService
+  implements OnModuleInit, OnModuleDestroy, BeforeApplicationShutdown
+{
+  private pool: Pool;
+
+  async onModuleInit() {
+    // Safe to connect here — all providers available
+    this.pool = new Pool({ connectionString: process.env.DATABASE_URL });
+    await this.pool.query('SELECT 1'); // verify connection
+    console.log('✓ Database connected');
+  }
+
+  async onApplicationBootstrap() {
+    // All modules initialized — safe to use other services
+    await this.runPendingMigrations();
+  }
+
+  async beforeApplicationShutdown(signal: string) {
+    console.log(`Shutting down gracefully (${signal})...`);
+    // Stop accepting new connections, finish in-flight requests
+  }
+
+  async onModuleDestroy() {
+    await this.pool.end(); // close DB connection pool
+    console.log('✓ Database pool closed');
+  }
+}
+
+// IMPORTANT: enable shutdown hooks in main.ts
+const app = await NestFactory.create(AppModule);
+app.enableShutdownHooks(); // listens for SIGTERM, SIGINT
+await app.listen(3000);</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c18">
+      <summary><span class="chk" onclick="td(event,'c18')"></span><span class="badge M">MED</span><span class="qa-q">NestJS microservices — transports, patterns, hybrid apps</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Microservice with Redis transport
+// microservice/main.ts
+const app = await NestFactory.createMicroservice&lt;MicroserviceOptions&gt;(AppModule, {
+  transport: Transport.REDIS,
+  options: { host: 'localhost', port: 6379 },
+});
+await app.listen();
+
+// Controller in microservice: @MessagePattern instead of @Get/@Post
+@Controller()
+export class OrdersController {
+  @MessagePattern({ cmd: 'create_order' }) // request-response
+  async createOrder(data: CreateOrderDto): Promise&lt;Order&gt; {
+    return this.ordersService.create(data);
+  }
+
+  @EventPattern('order.shipped') // fire-and-forget
+  async onOrderShipped(payload: { orderId: string }) {
+    await this.notificationsService.sendShippingUpdate(payload.orderId);
+  }
+}
+
+// Client: call the microservice
+@Injectable()
+export class ApiGatewayService {
+  constructor(
+    @Inject('ORDERS_SERVICE') private ordersClient: ClientProxy
+  ) {}
+
+  async createOrder(dto: CreateOrderDto) {
+    // Request-response: waits for reply
+    return this.ordersClient.send({ cmd: 'create_order' }, dto).toPromise();
+  }
+
+  async notifyShipped(orderId: string) {
+    // Event: fire-and-forget
+    this.ordersClient.emit('order.shipped', { orderId });
+  }
+}
+
+// Hybrid app: HTTP + microservice in one process
+const app = await NestFactory.create(AppModule);
+app.connectMicroservice({ transport: Transport.REDIS, options: { ... } });
+await app.startAllMicroservices(); // start microservice listeners
+await app.listen(3000);           // start HTTP server</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ REST & GRAPHQL -->
+<section class="section" id="rest">
+  <div class="sec-hdr">
+    <span class="sec-tag">API</span>
+    <span class="sec-title">REST &amp; GraphQL</span>
+    <span class="sec-ct">5 questions</span>
+  </div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c19">
+      <summary><span class="chk" onclick="td(event,'c19')"></span><span class="badge H">HIGH</span><span class="qa-q">HTTP methods, idempotency, and status codes every senior engineer knows</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th>Method</th><th>Purpose</th><th>Idempotent</th><th>Safe</th><th>Success code</th></tr>
+          <tr><td>GET</td><td>Read</td><td>✅</td><td>✅</td><td>200</td></tr>
+          <tr><td>POST</td><td>Create</td><td>❌</td><td>❌</td><td>201</td></tr>
+          <tr><td>PUT</td><td>Full replace</td><td>✅</td><td>❌</td><td>200</td></tr>
+          <tr><td>PATCH</td><td>Partial update</td><td>❌*</td><td>❌</td><td>200</td></tr>
+          <tr><td>DELETE</td><td>Delete</td><td>✅</td><td>❌</td><td>204</td></tr>
+        </table></div>
+        <div class="tbl" style="margin-top:12px"><table>
+          <tr><th>Code</th><th>When to use</th></tr>
+          <tr><td>200</td><td>Successful GET/PUT/PATCH</td></tr>
+          <tr><td>201</td><td>Resource created (POST) — add Location header</td></tr>
+          <tr><td>204</td><td>Success, no body (DELETE, action endpoints)</td></tr>
+          <tr><td>400</td><td>Malformed request, missing required field</td></tr>
+          <tr><td>401</td><td>Not authenticated — no token, expired, invalid signature</td></tr>
+          <tr><td>403</td><td>Authenticated but not authorized — wrong role/scope</td></tr>
+          <tr><td>404</td><td>Resource doesn't exist</td></tr>
+          <tr><td>409</td><td>Conflict — duplicate email, version mismatch</td></tr>
+          <tr><td>422</td><td>Validation failed — well-formed JSON but invalid data</td></tr>
+          <tr><td>429</td><td>Rate limited — include Retry-After header</td></tr>
+          <tr><td>500</td><td>Unhandled server error — never expose stack trace</td></tr>
+          <tr><td>503</td><td>DB down, dependency unavailable, circuit breaker open</td></tr>
+        </table></div>
+        <div class="note"><strong>Idempotent</strong> = calling it N times produces same result as once. Crucial for retry logic. <strong>Safe</strong> = no server state changes. PATCH is not idempotent because <code>PATCH /counter {increment: 1}</code> would increment every call.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c20">
+      <summary><span class="chk" onclick="td(event,'c20')"></span><span class="badge H">HIGH</span><span class="qa-q">N+1 problem in GraphQL and DataLoader — how batching works</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>If you query 20 users and each user's posts, GraphQL calls your <code>@ResolveField</code> once per user = 21 DB queries. DataLoader collects all <code>load(userId)</code> calls within the same event loop tick, then fires ONE batched query.</p>
+        <pre class="cb">// THE PROBLEM: N+1 queries
+@ResolveField(() =&gt; [Post])
+async posts(@Parent() user: User) {
+  // Called once per user — 20 users = 20 DB queries!
+  return this.db.query('SELECT * FROM posts WHERE user_id = $1', [user.id]);
+}
+
+// THE FIX: DataLoader batches calls
+import DataLoader from 'dataloader';
+
+@Injectable({ scope: Scope.REQUEST }) // Request-scoped: fresh loader per request (no cross-request caching)
+export class PostsByUserLoader extends DataLoader&lt;string, Post[]&gt; {
+  constructor(private db: Database) {
+    super(async (userIds: readonly string[]) =&gt; {
+      // ONE query for all 20 users
+      const posts = await db.query(
+        'SELECT * FROM posts WHERE user_id = ANY($1::uuid[])',
+        [[...userIds]]
+      );
+
+      // DataLoader REQUIRES result array in SAME ORDER as input keys
+      return userIds.map(id =&gt;
+        posts.filter(post =&gt; post.userId === id)
+      );
+    });
+  }
+}
+
+// Use in resolver
+@Resolver(() =&gt; User)
+export class UsersResolver {
+  constructor(private loader: PostsByUserLoader) {}
+
+  @ResolveField(() =&gt; [Post])
+  async posts(@Parent() user: User) {
+    return this.loader.load(user.id); // batched automatically!
+  }
+}
+
+// DataLoader also caches within the request:
+// loading user '123' twice in same request = 1 DB call</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c21">
+      <summary><span class="chk" onclick="td(event,'c21')"></span><span class="badge H">HIGH</span><span class="qa-q">REST API design best practices — versioning, pagination, filtering</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// VERSIONING: URL prefix preferred (explicit, cacheable)
+GET /api/v1/users        // v1
+GET /api/v2/users        // v2 (new breaking changes)
+// Alternative: header Accept: application/vnd.api+json; version=2
+
+// PAGINATION: cursor-based vs offset
+// Offset: simple but unreliable on changing data
+GET /users?page=2&amp;limit=20
+// Response: { data: [...], total: 1043, page: 2, totalPages: 53 }
+
+// Cursor: stable, efficient for large tables
+GET /users?cursor=eyJpZCI6IjEyMyJ9&amp;limit=20
+// Response: { data: [...], nextCursor: "eyJpZCI6IjE0MyJ9", hasMore: true }
+// Cursor encodes: btoa(JSON.stringify({ id: lastItem.id }))
+
+// FILTERING: consistent query params
+GET /orders?status=pending&amp;userId=123&amp;createdAfter=2024-01-01&amp;sort=-createdAt
+// - Filter: field=value
+// - Range: fieldAfter / fieldBefore
+// - Sort: field (asc) or -field (desc)
+
+// RESPONSE ENVELOPE: consistent structure
+// Success:
+{ "data": {...}, "meta": { "requestId": "abc" } }
+
+// Error:
+{ "error": { "code": "VALIDATION_ERROR", "message": "Email is invalid",
+             "details": [{ "field": "email", "message": "must be valid email" }] } }
+
+// NestJS implementation:
+@Get()
+async findAll(
+  @Query('status') status?: OrderStatus,
+  @Query('cursor') cursor?: string,
+  @Query('limit', new DefaultValuePipe(20), ParseIntPipe) limit?: number,
+  @Query('sort') sort?: string,
+) {
+  return this.ordersService.findAll({ status, cursor, limit, sort });
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c22">
+      <summary><span class="chk" onclick="td(event,'c22')"></span><span class="badge M">MED</span><span class="qa-q">REST vs GraphQL — when to choose each, real trade-offs</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th></th><th>REST</th><th>GraphQL</th></tr>
+          <tr><td>Over-fetching</td><td>Common (GET /user returns all fields)</td><td>None (client requests exact fields)</td></tr>
+          <tr><td>Multiple resources</td><td>Multiple round trips</td><td>Single query for nested data</td></tr>
+          <tr><td>HTTP caching</td><td>Native (CDN, browser cache)</td><td>Hard (POST requests don't cache)</td></tr>
+          <tr><td>File upload</td><td>Simple multipart/form-data</td><td>Needs apollo-upload-client workaround</td></tr>
+          <tr><td>API exploration</td><td>OpenAPI/Swagger</td><td>GraphiQL playground built-in</td></tr>
+          <tr><td>Type safety</td><td>OpenAPI needed separately</td><td>Built-in schema → codegen</td></tr>
+          <tr><td>Real-time</td><td>SSE/webhooks (separate setup)</td><td>Subscriptions (built into spec)</td></tr>
+          <tr><td>Learning curve</td><td>Low</td><td>DataLoader, resolvers, schema design</td></tr>
+        </table></div>
+        <div class="note"><strong>Recommended:</strong> REST for simple CRUD, public APIs, file handling. GraphQL for complex relational data with multiple clients (mobile + web) that need different data shapes. You used GraphQL in your Decrypted Labs headless CMS integration — good example to cite.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c23">
+      <summary><span class="chk" onclick="td(event,'c23')"></span><span class="badge M">MED</span><span class="qa-q">WebSockets vs SSE vs Long Polling — when to use each</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th></th><th>WebSocket</th><th>SSE</th><th>Long Polling</th></tr>
+          <tr><td>Direction</td><td>Full duplex (both ways)</td><td>Server → client only</td><td>Server → client only</td></tr>
+          <tr><td>Protocol</td><td>ws:// (upgrades HTTP)</td><td>HTTP (text/event-stream)</td><td>HTTP</td></tr>
+          <tr><td>Browser support</td><td>All</td><td>All (not IE)</td><td>All</td></tr>
+          <tr><td>Auto-reconnect</td><td>Manual</td><td>Built-in</td><td>Manual</td></tr>
+          <tr><td>HTTP/2 multiplexing</td><td>No</td><td>Yes (up to 6 streams/domain)</td><td>Yes</td></tr>
+          <tr><td>Complexity</td><td>High</td><td>Low</td><td>Medium</td></tr>
+        </table></div>
+        <pre class="cb">// SSE: perfect for LLM streaming, notifications, live feeds
+// NestJS SSE endpoint (you used this in AI SDR Agent)
+@Get('chat/stream')
+@Sse()
+chat(@Query('msg') msg: string): Observable&lt;MessageEvent&gt; {
+  return new Observable(observer =&gt; {
+    (async () =&gt; {
+      const stream = anthropic.messages.stream({ model: '...', messages: [...] });
+      for await (const chunk of stream) {
+        if (chunk.delta?.text) observer.next({ data: { text: chunk.delta.text } });
+      }
+      observer.next({ data: { done: true } });
+      observer.complete();
+    })();
+  });
+}
+
+// WebSocket: real-time chat, collaborative editing, multiplayer games
+@WebSocketGateway({ cors: { origin: '*' } })
+export class ChatGateway {
+  @SubscribeMessage('message')
+  handleMessage(client: Socket, payload: { room: string; text: string }) {
+    this.server.to(payload.room).emit('message', { ...payload, from: client.id });
+  }
+}</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════ POSTGRESQL -->
+<section class="section" id="postgres">
+  <div class="sec-hdr"><span class="sec-tag">PostgreSQL</span><span class="sec-title">PostgreSQL</span><span class="sec-ct">5 questions</span></div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c24">
+      <summary><span class="chk" onclick="td(event,'c24')"></span><span class="badge H">HIGH</span><span class="qa-q">Index types — B-tree, GIN, GiST, BRIN — and compound index left-prefix rule</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table><tr><th>Type</th><th>Best for</th><th>When to use</th></tr>
+        <tr><td>B-tree (default)</td><td>=, &lt;, &gt;, BETWEEN, LIKE 'prefix%'</td><td>Almost everything — emails, IDs, timestamps, status enums</td></tr>
+        <tr><td>GIN</td><td>JSONB, arrays, full-text search</td><td>WHERE metadata @&gt; '{"key":"val"}' or ANY(tags) = 'x'</td></tr>
+        <tr><td>GiST</td><td>Geometric, range types, tsvector</td><td>Location coordinates, date ranges, full-text search</td></tr>
+        <tr><td>BRIN</td><td>Very large sequential tables</td><td>Logs ordered by created_at — tiny index, fast on huge tables</td></tr>
+        <tr><td>Hash</td><td>Equality only (=)</td><td>Rarely — B-tree handles equality too and supports range queries</td></tr></table></div>
+        <pre class="cb">-- B-tree: default, covers 90% of cases
+CREATE INDEX idx_orders_user ON orders(user_id);
+CREATE UNIQUE INDEX idx_users_email ON users(email);
+
+-- COMPOUND INDEX — left-prefix rule is critical
+CREATE INDEX idx_orders_compound ON orders(user_id, status, created_at DESC);
+-- This index satisfies queries starting from leftmost field:
+-- ✅ WHERE user_id = $1
+-- ✅ WHERE user_id = $1 AND status = $2
+-- ✅ WHERE user_id = $1 AND status = $2 ORDER BY created_at DESC
+-- ❌ WHERE status = $1 alone   -- doesn't start from leftmost field
+-- ❌ WHERE created_at > $1    -- skips fields
+
+-- GIN: JSONB queries (you use this in MongoDB-style flexible schemas)
+CREATE INDEX idx_meta ON products USING GIN(metadata);
+-- Enables: WHERE metadata @> '{"category": "tech", "inStock": true}'
+
+-- GIN: full-text search
+CREATE INDEX idx_fts ON articles USING GIN(
+  to_tsvector('english', coalesce(title,'') || ' ' || coalesce(content,''))
+);
+-- Enables: WHERE to_tsvector('english', title||' '||content) @@ plainto_tsquery('nestjs guide')
+
+-- Partial index: index only relevant subset (smaller, faster)
+CREATE INDEX idx_pending_orders ON orders(created_at)
+WHERE status = 'pending';  -- only indexes pending orders, not archived
+
+-- TTL-like pattern with partial index for cleanup queries
+CREATE INDEX idx_expired_sessions ON sessions(expires_at)
+WHERE expires_at &lt; NOW();</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c25">
+      <summary><span class="chk" onclick="td(event,'c25')"></span><span class="badge H">HIGH</span><span class="qa-q">EXPLAIN ANALYZE — how to read it and fix slow queries</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
+SELECT o.id, o.total, u.email
+FROM orders o
+JOIN users u ON u.id = o.user_id
+WHERE o.status = 'pending'
+  AND o.created_at &gt; NOW() - INTERVAL '7 days'
+ORDER BY o.created_at DESC
+LIMIT 20;</pre>
+        <p>Reading the output — what each thing means:</p>
+        <ul>
+          <li><strong>Seq Scan</strong> on large table → missing index → add one</li>
+          <li><strong>Index Scan</strong> → good, using an index</li>
+          <li><strong>Index Only Scan</strong> → best, all data served from index</li>
+          <li><strong>cost=X..Y</strong> → X=startup cost, Y=total cost (arbitrary units). Higher Y = slower relative to other plans</li>
+          <li><strong>actual time=X..Y rows=N loops=N</strong> → real ms. Compare estimated vs actual rows — big gap means stale statistics</li>
+          <li><strong>Buffers: hit=N read=N</strong> → hit = from cache (good), read = from disk (bad)</li>
+          <li><strong>Hash Join</strong> → good for large sets; <strong>Nested Loop</strong> → good for small inner sets</li>
+        </ul>
+        <pre class="cb">-- Stale statistics fix (run after large data changes)
+ANALYZE orders;
+-- Or vacuum + analyze:
+VACUUM ANALYZE orders;
+
+-- Query taking too long? Check with:
+SELECT pid, now() - pg_stat_activity.query_start AS duration, query, state
+FROM pg_stat_activity
+WHERE state = 'active' AND (now() - query_start) &gt; interval '5 seconds';
+
+-- Kill a long-running query:
+SELECT pg_cancel_backend(pid);   -- graceful cancel
+SELECT pg_terminate_backend(pid); -- force kill
+
+-- Find missing indexes (sequential scans on large tables):
+SELECT schemaname, relname, seq_scan, idx_scan,
+       seq_scan - idx_scan AS too_many_seq_scans
+FROM pg_stat_user_tables
+WHERE seq_scan &gt; 0
+ORDER BY seq_scan DESC;</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c26">
+      <summary><span class="chk" onclick="td(event,'c26')"></span><span class="badge H">HIGH</span><span class="qa-q">ACID, transactions, and isolation levels — what they mean in practice</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <ul>
+          <li><strong>Atomicity</strong> — all statements in a transaction succeed or ALL roll back. No partial state.</li>
+          <li><strong>Consistency</strong> — constraints, foreign keys, triggers always satisfied before AND after commit.</li>
+          <li><strong>Isolation</strong> — concurrent transactions don't see each other's uncommitted data (to a configurable degree).</li>
+          <li><strong>Durability</strong> — committed data survives crashes. PostgreSQL writes to WAL (Write-Ahead Log) before confirming commit.</li>
+        </ul>
+        <pre class="cb">-- Real transaction: money transfer
+BEGIN;
+-- Lock both rows before reading (prevents phantom reads)
+SELECT balance FROM accounts WHERE id = $1 FOR UPDATE;
+SELECT balance FROM accounts WHERE id = $2 FOR UPDATE;
+
+UPDATE accounts SET balance = balance - 100 WHERE id = $1;
+UPDATE accounts SET balance = balance + 100 WHERE id = $2;
+
+-- Check constraint (balance can't go negative)
+-- If violated, PostgreSQL rolls back automatically
+COMMIT;
+
+-- Isolation levels (PostgreSQL default: Read Committed)
+-- Read Committed:   sees committed data at query time (most common)
+-- Repeatable Read:  snapshot at transaction start, prevents non-repeatable reads
+-- Serializable:     full isolation, detects write conflicts (slowest, safest)
+
+-- NestJS + TypeORM transaction:
+await this.dataSource.transaction(async (manager) =&gt; {
+  const sender = await manager.findOne(Account, { where: { id: senderId }, lock: { mode: 'pessimistic_write' } });
+  const receiver = await manager.findOne(Account, { where: { id: receiverId }, lock: { mode: 'pessimistic_write' } });
+
+  if (sender.balance &lt; amount) throw new BadRequestException('Insufficient funds');
+
+  sender.balance -= amount;
+  receiver.balance += amount;
+
+  await manager.save([sender, receiver]);
+  await manager.save(manager.create(Transaction, { senderId, receiverId, amount }));
+});
+// If any line throws, everything rolls back automatically</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c27">
+      <summary><span class="chk" onclick="td(event,'c27')"></span><span class="badge H">HIGH</span><span class="qa-q">Row Level Security (RLS) for multi-tenant SaaS</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>RLS enforces data isolation at the database level — even if application code has a bug, the DB won't return another tenant's data. It's the last line of defense in multi-tenant apps.</p>
+        <pre class="cb">-- 1. Enable RLS on every tenant-scoped table
+ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE documents FORCE ROW LEVEL SECURITY; -- applies even to table owner
+
+-- 2. Create policy: each query automatically filtered by tenant_id
+CREATE POLICY tenant_isolation ON documents
+  USING (tenant_id = current_setting('app.tenant_id')::uuid);
+
+-- Separate policies for different operations (more control):
+CREATE POLICY select_own ON documents FOR SELECT
+  USING (tenant_id = current_setting('app.tenant_id')::uuid);
+
+CREATE POLICY insert_own ON documents FOR INSERT
+  WITH CHECK (tenant_id = current_setting('app.tenant_id')::uuid);
+
+CREATE POLICY update_own ON documents FOR UPDATE
+  USING (tenant_id = current_setting('app.tenant_id')::uuid)
+  WITH CHECK (tenant_id = current_setting('app.tenant_id')::uuid);
+
+-- 3. NestJS middleware: set tenant context per request
+@Injectable()
+export class TenantMiddleware implements NestMiddleware {
+  constructor(private db: DataSource) {}
+
+  async use(req: Request, res: Response, next: NextFunction) {
+    const subdomain = req.hostname.split('.')[0]; // acme.yoursaas.com
+    const tenant = await this.tenantRepo.findBySlug(subdomain);
+
+    if (!tenant) throw new NotFoundException('Tenant not found');
+
+    req['tenantId'] = tenant.id;
+
+    // Set Postgres session variable for this connection
+    // 'true' = local to transaction only, 'false' = whole session
+    await this.db.query("SELECT set_config('app.tenant_id', $1, true)", [tenant.id]);
+
+    next();
+  }
+}</pre>
+        <div class="warn"><strong>Gotcha:</strong> Connection pooling (PgBouncer) can reuse connections across requests. Use transaction-mode pooling or set the config at the start of every transaction, not just at connection time.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c28">
+      <summary><span class="chk" onclick="td(event,'c28')"></span><span class="badge M">MED</span><span class="qa-q">CTEs, window functions, and advanced queries</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">-- CTE (Common Table Expression): named subquery, readable, reusable
+WITH
+  active_users AS (
+    SELECT id, name FROM users WHERE last_login &gt; NOW() - INTERVAL '30 days'
+  ),
+  revenue AS (
+    SELECT user_id, SUM(amount) AS total, COUNT(*) AS orders
+    FROM orders
+    WHERE user_id IN (SELECT id FROM active_users)
+      AND status = 'completed'
+    GROUP BY user_id
+  )
+SELECT u.name, r.total, r.orders
+FROM active_users u
+JOIN revenue r ON u.id = r.user_id
+ORDER BY r.total DESC;
+
+-- Window functions: compute across rows without collapsing them
+SELECT
+  user_id,
+  amount,
+  created_at,
+  -- Running total per user
+  SUM(amount) OVER (PARTITION BY user_id ORDER BY created_at) AS running_total,
+  -- Rank within all orders (1 = most expensive)
+  RANK() OVER (ORDER BY amount DESC) AS amount_rank,
+  -- Previous order amount (lag)
+  LAG(amount, 1) OVER (PARTITION BY user_id ORDER BY created_at) AS prev_order_amount,
+  -- Month-over-month comparison
+  amount - LAG(amount, 1) OVER (PARTITION BY user_id ORDER BY created_at) AS change
+FROM orders
+WHERE status = 'completed';
+
+-- Upsert: insert or update (very common in production)
+INSERT INTO user_preferences (user_id, theme, notifications)
+VALUES ($1, $2, $3)
+ON CONFLICT (user_id)
+DO UPDATE SET
+  theme = EXCLUDED.theme,
+  notifications = EXCLUDED.notifications,
+  updated_at = NOW();</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ MONGODB -->
+<section class="section" id="mongo">
+  <div class="sec-hdr"><span class="sec-tag">MongoDB</span><span class="sec-title">MongoDB</span><span class="sec-ct">4 questions</span></div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c29">
+      <summary><span class="chk" onclick="td(event,'c29')"></span><span class="badge H">HIGH</span><span class="qa-q">Aggregation pipeline — all key stages with a real example</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Real example: monthly revenue report per user (like your Cruise Booking System)
+db.orders.aggregate([
+  // $match FIRST — uses indexes, reduces pipeline size
+  { $match: {
+    status: 'completed',
+    createdAt: { $gte: new Date('2024-01-01') }
+  }},
+
+  // $group — aggregate (SQL GROUP BY equivalent)
+  { $group: {
+    _id: {
+      userId: '$userId',
+      month: { $dateToString: { format: '%Y-%m', date: '$createdAt' } }
+    },
+    totalRevenue: { $sum: '$amount' },
+    orderCount:   { $count: {} },
+    avgOrder:     { $avg: '$amount' },
+    promoUsed:    { $sum: { $cond: ['$promoCode', 1, 0] } }
+  }},
+
+  // $lookup — left join users collection
+  { $lookup: {
+    from: 'users',
+    localField: '_id.userId',
+    foreignField: '_id',
+    as: 'user'
+  }},
+  { $unwind: '$user' }, // flatten single-element array from $lookup
+
+  // $project — reshape output fields
+  { $project: {
+    month: '$_id.month',
+    userName: '$user.name',
+    userEmail: '$user.email',
+    totalRevenue: 1,
+    orderCount: 1,
+    avgOrder: { $round: ['$avgOrder', 2] }
+  }},
+
+  { $sort: { month: -1, totalRevenue: -1 } },
+
+  // $facet: multiple aggregations in one pass (pagination + total count)
+  // { $facet: {
+  //   data:  [{ $skip: 0 }, { $limit: 20 }],
+  //   total: [{ $count: 'count' }]
+  // }}
+]);</pre>
+        <div class="note"><strong>Performance rule:</strong> Always put <code>$match</code> and <code>$limit</code> as early as possible. Late filtering means processing more documents through the pipeline. Add indexes on fields used in early <code>$match</code> stages.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c30">
+      <summary><span class="chk" onclick="td(event,'c30')"></span><span class="badge H">HIGH</span><span class="qa-q">Embed vs Reference — schema design decision framework</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th>Embed when</th><th>Reference when</th></tr>
+          <tr><td>Data always accessed together</td><td>Data has independent lifecycle</td></tr>
+          <tr><td>1-to-1 or 1-to-few relationship</td><td>1-to-many (unbounded count)</td></tr>
+          <tr><td>Child data rarely changes independently</td><td>Same data referenced by many parents</td></tr>
+          <tr><td>Need atomic updates across both</td><td>Need to query children independently</td></tr>
+          <tr><td>Document won't exceed 16MB limit</td><td>Child set grows over time</td></tr>
+        </table></div>
+        <pre class="cb">// EMBED: address always fetched with user (1-to-1, static)
+{
+  _id: ObjectId("..."),
+  name: "Umair Amir",
+  email: "umair@example.com",
+  address: { city: "Karachi", country: "PK", zip: "75500" } // always needed together
+}
+
+// REFERENCE: orders have own lifecycle, can be thousands
+// users:  { _id: ObjectId, name: "Umair" }
+// orders: { _id: ObjectId, userId: ObjectId("..."), amount: 100, status: "completed" }
+// Query: db.orders.find({ userId: ObjectId("...") }).sort({ createdAt: -1 }).limit(20)
+
+// HYBRID — denormalize summary data, reference for details
+// Good for performance: avoids joins for common queries
+{
+  _id: ObjectId("..."),
+  name: "Umair",
+  // Embed summary (read-heavy, rarely changes)
+  orderStats: {
+    totalOrders: 47,
+    totalSpent: 8340.50,
+    lastOrderAt: ISODate("2024-03-15")
+  }
+  // Orders themselves are in separate collection
+}
+// Update stats: db.users.updateOne({ _id }, { $inc: { 'orderStats.totalOrders': 1 } })
+
+// ARRAY GROWTH TRAP — never embed unbounded arrays!
+// BAD: comments array grows to thousands → 16MB limit hit, slow updates
+{ _id: ObjectId, postTitle: "...", comments: [ /* thousands */ ] }
+// GOOD: separate comments collection with postId reference</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c31">
+      <summary><span class="chk" onclick="td(event,'c31')"></span><span class="badge H">HIGH</span><span class="qa-q">MongoDB indexes — compound, TTL, text, sparse, partial</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Single field
+db.users.createIndex({ email: 1 }, { unique: true });
+
+// Compound — left-prefix rule (same as PostgreSQL)
+db.orders.createIndex({ userId: 1, status: 1, createdAt: -1 });
+// Satisfies: { userId } | { userId, status } | { userId, status, createdAt range }
+// Does NOT satisfy: { status } alone or { createdAt } alone
+
+// TTL: auto-delete expired documents
+db.sessions.createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+// MongoDB checks every 60s — documents deleted when expiresAt &lt; now
+
+// Text: full-text search
+db.articles.createIndex({ title: 'text', content: 'text' }, { weights: { title: 10, content: 1 } });
+db.articles.find({ $text: { $search: 'NestJS microservices tutorial' } },
+                 { score: { $meta: 'textScore' } })
+           .sort({ score: { $meta: 'textScore' } });
+
+// Sparse: only index documents that HAVE the field (saves space for optional fields)
+db.users.createIndex({ githubId: 1 }, { sparse: true });
+
+// Partial: only index documents matching a filter
+db.orders.createIndex({ amount: 1 }, {
+  partialFilterExpression: { status: { $in: ['pending', 'processing'] } }
+  // Only active orders indexed — archived orders excluded → smaller, faster index
+});
+
+// Explain queries to check index usage:
+db.orders.find({ userId: ObjectId("..."), status: 'pending' })
+         .explain('executionStats');
+// Look for: IXSCAN (index used) vs COLLSCAN (full table scan)</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c32">
+      <summary><span class="chk" onclick="td(event,'c32')"></span><span class="badge M">MED</span><span class="qa-q">Change streams — real-time events from MongoDB</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Change streams watch for insert/update/delete/replace events
+// Requires MongoDB replica set (DigitalOcean managed MongoDB has this)
+
+const changeStream = db.collection('orders').watch(
+  [
+    // Pipeline filters (reduces network traffic)
+    { $match: { operationType: { $in: ['insert', 'update'] } } },
+    { $match: { 'fullDocument.status': 'completed' } }
+  ],
+  { fullDocument: 'updateLookup' } // include full document on updates
+);
+
+changeStream.on('change', async (event) =&gt; {
+  if (event.operationType === 'insert') {
+    // New order placed
+    await notificationService.sendOrderConfirmation(event.fullDocument);
+    await analyticsService.trackNewOrder(event.fullDocument);
+  }
+
+  if (event.operationType === 'update') {
+    // Order status changed
+    const orderId = event.documentKey._id;
+    const newStatus = event.updateDescription?.updatedFields?.status;
+    if (newStatus === 'shipped') {
+      await notificationService.sendShippingUpdate(orderId);
+    }
+  }
+});
+
+// Resume after restart using resumeToken
+let resumeToken = null;
+changeStream.on('change', (event) =&gt; {
+  resumeToken = event._id; // save this to DB/Redis
+  processEvent(event);
+});
+
+// On restart, resume from where you left off:
+const stream = db.collection('orders').watch([], { resumeAfter: resumeToken });
+
+// Use cases: cache invalidation, ElasticSearch sync, audit logs, real-time dashboards</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ REDIS -->
+<section class="section" id="redis">
+  <div class="sec-hdr"><span class="sec-tag">Redis</span><span class="sec-title">Redis &amp; Caching</span><span class="sec-ct">4 questions</span></div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c33">
+      <summary><span class="chk" onclick="td(event,'c33')"></span><span class="badge H">HIGH</span><span class="qa-q">Redis data structures — which to use when</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th>Structure</th><th>Operations</th><th>Use case</th></tr>
+          <tr><td>String</td><td>SET/GET/INCR/SETEX</td><td>Cache values, session tokens, counters, feature flags</td></tr>
+          <tr><td>Hash</td><td>HSET/HGET/HGETALL/HDEL</td><td>User session (multiple fields), per-tenant config</td></tr>
+          <tr><td>List</td><td>LPUSH/RPOP/LRANGE/LLEN</td><td>Activity feed, simple FIFO queue, recent items</td></tr>
+          <tr><td>Set</td><td>SADD/SMEMBERS/SISMEMBER/SCARD</td><td>Unique visitors, online users, tags, deduplication</td></tr>
+          <tr><td>Sorted Set</td><td>ZADD/ZRANGE/ZRANGEBYSCORE/ZRANK</td><td>Leaderboards, sliding window rate limiting, scheduled jobs</td></tr>
+          <tr><td>Stream</td><td>XADD/XREAD/XGROUP</td><td>Durable event log, message broker alternative</td></tr>
+        </table></div>
+        <pre class="cb">// String: cache with TTL
+await redis.set('user:123', JSON.stringify(user), 'EX', 3600); // expires in 1h
+await redis.get('user:123');
+
+// Hash: store user session (access individual fields without deserializing)
+await redis.hset('session:abc', { userId: '123', role: 'admin', loginAt: Date.now() });
+await redis.hget('session:abc', 'role');   // 'admin'
+await redis.hgetall('session:abc');        // all fields
+await redis.expire('session:abc', 86400); // 24h expiry
+
+// Set: track unique daily active users
+await redis.sadd(`dau:${today}`, userId);
+await redis.scard(`dau:${today}`); // count unique users today
+
+// Sorted Set: leaderboard
+await redis.zadd('leaderboard', score, userId);
+await redis.zrange('leaderboard', 0, 9, 'REV', 'WITHSCORES'); // top 10
+await redis.zrank('leaderboard', userId); // user's rank</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c34">
+      <summary><span class="chk" onclick="td(event,'c34')"></span><span class="badge H">HIGH</span><span class="qa-q">Rate limiting with Redis — fixed window and sliding window</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// FIXED WINDOW: simple, O(1) but allows 2x burst at window boundary
+async function fixedWindow(key: string, limit: number, windowSec: number): Promise&lt;boolean&gt; {
+  const windowKey = `rl:${key}:${Math.floor(Date.now() / (windowSec * 1000))}`;
+  const count = await redis.incr(windowKey);
+  if (count === 1) await redis.expire(windowKey, windowSec);
+  return count &lt;= limit;
+}
+
+// SLIDING WINDOW (accurate, no boundary burst):
+// Uses Sorted Set — score = timestamp, member = request ID
+async function slidingWindow(key: string, limit: number, windowMs: number): Promise&lt;boolean&gt; {
+  const now = Date.now();
+  const windowStart = now - windowMs;
+  const reqId = `${now}-${Math.random()}`;
+
+  const [,, count] = await redis.multi()
+    .zremrangebyscore(`rl:${key}`, '-inf', windowStart) // remove old entries
+    .zadd(`rl:${key}`, now, reqId)                      // add this request
+    .zcard(`rl:${key}`)                                  // count in window
+    .expire(`rl:${key}`, Math.ceil(windowMs / 1000))     // set TTL
+    .exec() as [any, any, number, any];
+
+  return count &lt;= limit;
+}
+
+// NestJS: apply rate limiting as a Guard
+@Injectable()
+export class RateLimitGuard implements CanActivate {
+  constructor(private redis: Redis, private reflector: Reflector) {}
+
+  async canActivate(ctx: ExecutionContext): Promise&lt;boolean&gt; {
+    const req = ctx.switchToHttp().getRequest();
+    const ip = req.ip;
+    const path = req.path;
+
+    const allowed = await slidingWindow(`${ip}:${path}`, 100, 60000); // 100/min
+    if (!allowed) throw new HttpException('Too Many Requests', 429);
+    return true;
+  }
+}
+
+// In main.ts or specific controllers:
+@UseGuards(RateLimitGuard)
+@Post('auth/login') // protect sensitive endpoints
+async login(@Body() dto: LoginDto) { ... }</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c35">
+      <summary><span class="chk" onclick="td(event,'c35')"></span><span class="badge H">HIGH</span><span class="qa-q">Cache patterns — cache-aside, write-through, invalidation, stampede prevention</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// CACHE-ASIDE (most common): read from cache, miss → DB → populate cache
+@Injectable()
+export class UsersService {
+  async findById(id: string): Promise&lt;User&gt; {
+    const cached = await this.redis.get(`user:${id}`);
+    if (cached) return JSON.parse(cached);
+
+    const user = await this.usersRepo.findById(id);
+    if (user) await this.redis.setex(`user:${id}`, 3600, JSON.stringify(user));
+    return user;
+  }
+
+  // Invalidate on update — always delete, never update cache directly
+  async update(id: string, dto: UpdateUserDto): Promise&lt;User&gt; {
+    const user = await this.usersRepo.update(id, dto);
+    await this.redis.del(`user:${id}`);
+    return user;
+  }
+}
+
+// WRITE-THROUGH: update DB + cache atomically
+async update(id: string, dto: UpdateUserDto): Promise&lt;User&gt; {
+  const user = await this.usersRepo.update(id, dto);
+  await this.redis.setex(`user:${id}`, 3600, JSON.stringify(user)); // write-through
+  return user;
+}
+
+// CACHE STAMPEDE prevention: many requests miss cache simultaneously
+// → all hit DB at once → DB overload
+// Fix: use Redis SETNX as a lock
+async getWithLock(id: string): Promise&lt;User&gt; {
+  const cached = await this.redis.get(`user:${id}`);
+  if (cached) return JSON.parse(cached);
+
+  const lockKey = `lock:user:${id}`;
+  const locked = await this.redis.set(lockKey, '1', 'EX', 10, 'NX'); // SET if Not eXists
+
+  if (!locked) {
+    // Another request is building the cache — wait and retry
+    await new Promise(r =&gt; setTimeout(r, 100));
+    return this.getWithLock(id); // retry — will hit cache next time
+  }
+
+  try {
+    const user = await this.usersRepo.findById(id);
+    await this.redis.setex(`user:${id}`, 3600, JSON.stringify(user));
+    return user;
+  } finally {
+    await this.redis.del(lockKey);
+  }
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c36">
+      <summary><span class="chk" onclick="td(event,'c36')"></span><span class="badge M">MED</span><span class="qa-q">Redis Pub/Sub — real-time notifications across multiple servers</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>Problem: User A's SSE connection is on Server 1. An event fires on Server 2. Without Pub/Sub, Server 1 never knows about it. Redis Pub/Sub bridges all server instances.</p>
+        <pre class="cb">// Publisher: any service on any server publishes events
+@Injectable()
+export class NotificationService {
+  constructor(private redis: Redis) {}
+
+  async notify(userId: string, event: NotificationEvent) {
+    // 1. Always persist first (user may be offline)
+    await this.notificationsRepo.create({ userId, ...event });
+    // 2. Publish to Redis channel
+    await this.redis.publish(`notify:${userId}`, JSON.stringify(event));
+  }
+}
+
+// SSE Handler: each server subscribes for connected users
+@Controller('notifications')
+export class NotificationsController {
+  constructor(private redis: Redis, private notificationsRepo: NotificationsRepository) {}
+
+  @Get('stream')
+  @Sse()
+  @UseGuards(JwtAuthGuard)
+  stream(@CurrentUser() user: User): Observable&lt;MessageEvent&gt; {
+    return new Observable(observer =&gt; {
+      // Replay missed notifications (user reconnecting)
+      this.notificationsRepo.findUnread(user.id).then(missed =&gt; {
+        missed.forEach(n =&gt; observer.next({ data: n }));
+      });
+
+      // Subscribe to future events
+      const sub = this.redis.duplicate(); // MUST use separate connection for subscribe
+      sub.subscribe(`notify:${user.id}`);
+      sub.on('message', (_, msg) =&gt; observer.next({ data: JSON.parse(msg) }));
+
+      // Cleanup on client disconnect
+      return () =&gt; {
+        sub.unsubscribe(`notify:${user.id}`);
+        sub.quit();
+      };
+    });
+  }
+}</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ DOCKER & CI/CD -->
+<section class="section" id="docker">
+  <div class="sec-hdr"><span class="sec-tag">DevOps</span><span class="sec-title">Docker &amp; CI/CD</span><span class="sec-ct">4 questions</span></div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c37">
+      <summary><span class="chk" onclick="td(event,'c37')"></span><span class="badge H">HIGH</span><span class="qa-q">Production Dockerfile — multi-stage build, layer caching, security</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb"># Multi-stage NestJS Dockerfile — final image ~150MB instead of ~900MB
+
+# ── Stage 1: Install ALL deps (for building TypeScript)
+FROM node:20-alpine AS deps
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci                       # reproducible install from package-lock.json
+# Copy prod deps separately for stage 3
+RUN cp -r node_modules /tmp/prod_modules_temp
+RUN npm ci --omit=dev && mv node_modules /tmp/prod_node_modules
+
+# ── Stage 2: Build TypeScript → JavaScript
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build                # outputs dist/
+
+# ── Stage 3: Runtime — minimal image
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production PORT=3000
+
+# Security: non-root user (never run production as root!)
+RUN addgroup -g 1001 -S appgroup \
+ && adduser  -u 1001 -S appuser -G appgroup
+USER appuser
+
+# Copy only what's needed to run
+COPY --from=deps    /tmp/prod_node_modules ./node_modules
+COPY --from=builder /app/dist ./dist
+COPY package.json ./
+
+EXPOSE 3000
+
+# Healthcheck: Docker/Kubernetes knows when app is ready
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD wget -qO- http://localhost:3000/health || exit 1
+
+CMD ["node", "dist/main.js"]</pre>
+        <div class="note"><strong>Layer caching rule:</strong> Order layers from LEAST → MOST frequently changing. <code>package.json</code> changes rarely → put it before <code>COPY . .</code>. If you <code>COPY . .</code> first, every code change invalidates the <code>npm ci</code> layer, reinstalling dependencies every build.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c38">
+      <summary><span class="chk" onclick="td(event,'c38')"></span><span class="badge H">HIGH</span><span class="qa-q">Docker Compose for local dev environment</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb"># docker-compose.yml — complete local dev stack
+version: '3.9'
+services:
+  api:
+    build: { context: ., dockerfile: Dockerfile.dev }
+    ports: ['3000:3000']
+    environment:
+      DATABASE_URL: postgresql://postgres:password@db:5432/myapp
+      REDIS_URL:    redis://redis:6379
+      NODE_ENV:     development
+    volumes:
+      - .:/app                   # hot reload: local code → container
+      - /app/node_modules        # IMPORTANT: don't overwrite container's node_modules
+    depends_on:
+      db:    { condition: service_healthy }
+      redis: { condition: service_started }
+    command: npm run start:dev
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB:       myapp
+      POSTGRES_USER:     postgres
+    ports: ['5432:5432']
+    volumes: ['postgres_data:/var/lib/postgresql/data']
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout:  3s
+      retries:  5
+
+  redis:
+    image: redis:7-alpine
+    ports: ['6379:6379']
+    volumes: ['redis_data:/data']
+    command: redis-server --appendonly yes  # enable persistence
+
+  redis-insight:   # GUI for Redis (optional but useful)
+    image: redislabs/redisinsight:latest
+    ports: ['8001:8001']
+
+volumes:
+  postgres_data: {}
+  redis_data:    {}
+
+# Run: docker compose up -d
+# Logs: docker compose logs -f api
+# Shell into container: docker compose exec api sh</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c39">
+      <summary><span class="chk" onclick="td(event,'c39')"></span><span class="badge H">HIGH</span><span class="qa-q">GitHub Actions — CI/CD pipeline with test, build, deploy</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb"># .github/workflows/deploy.yml
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_PASSWORD: test, POSTGRES_DB: testdb }
+        ports: ['5432:5432']
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 5
+      redis:
+        image: redis:7
+        ports: ['6379:6379']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' } # cache node_modules
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run test:cov
+        env:
+          DATABASE_URL: postgresql://postgres:test@localhost:5432/testdb
+          REDIS_URL: redis://localhost:6379
+
+  deploy:
+    needs: test               # only deploys if tests pass
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' # only on main branch
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t myapp:${{ github.sha }} .
+
+      - name: Push to registry
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker tag myapp:${{ github.sha }} myuser/myapp:latest
+          docker push myuser/myapp:latest
+
+      - name: Deploy to DigitalOcean via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host:     ${{ secrets.DO_HOST }}
+          username: ${{ secrets.DO_USER }}
+          key:      ${{ secrets.DO_SSH_KEY }}
+          script: |
+            cd /opt/myapp
+            docker compose pull
+            docker compose up -d --no-deps api
+            docker system prune -f</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c40">
+      <summary><span class="chk" onclick="td(event,'c40')"></span><span class="badge M">MED</span><span class="qa-q">Nginx reverse proxy — config with SSL, SSE, and load balancing</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb"># /etc/nginx/sites-enabled/api.conf
+
+upstream nestjs_app {
+    server 127.0.0.1:3000;
+    server 127.0.0.1:3001;  # if running multiple PM2 instances
+    keepalive 32;
+}
+
+server {
+    listen 80;
+    server_name api.umairamir.com;
+    return 301 https://$host$request_uri;  # force HTTPS
+}
+
+server {
+    listen 443 ssl http2;
+    server_name api.umairamir.com;
+
+    ssl_certificate     /etc/letsencrypt/live/api.umairamir.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.umairamir.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256;
+
+    # Standard API requests
+    location / {
+        proxy_pass         http://nestjs_app;
+        proxy_http_version 1.1;
+        proxy_set_header   Upgrade     $http_upgrade;
+        proxy_set_header   Connection  'upgrade';
+        proxy_set_header   Host        $host;
+        proxy_set_header   X-Real-IP   $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 60s;
+    }
+
+    # SSE / streaming endpoints — disable buffering!
+    location ~ ^/(chat|notifications)/stream {
+        proxy_pass            http://nestjs_app;
+        proxy_buffering       off;     # CRITICAL for SSE
+        proxy_cache           off;
+        proxy_read_timeout    1800s;   # 30 min connection timeout
+        proxy_set_header      Connection '';
+        proxy_http_version    1.1;
+        chunked_transfer_encoding on;
+    }
+
+    # Static files served by Nginx directly (not through Node)
+    location /static/ {
+        alias /opt/myapp/public/;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+}</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ AUTH & SECURITY -->
+<section class="section" id="auth">
+  <div class="sec-hdr"><span class="sec-tag">Auth</span><span class="sec-title">Authentication &amp; Security</span><span class="sec-ct">4 questions</span></div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c41">
+      <summary><span class="chk" onclick="td(event,'c41')"></span><span class="badge H">HIGH</span><span class="qa-q">JWT access + refresh token rotation — production pattern</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p><strong>Access token:</strong> short-lived (15min), stateless JWT, stored in memory (not localStorage). <strong>Refresh token:</strong> long-lived (30d), opaque random string, stored in DB + httpOnly cookie.</p>
+        <pre class="cb">@Injectable()
+export class AuthService {
+  // On login: issue both tokens
+  async login(user: User) {
+    const accessToken = this.jwt.sign(
+      { sub: user.id, email: user.email, role: user.role },
+      { secret: process.env.JWT_ACCESS_SECRET, expiresIn: '15m' }
+    );
+
+    const refreshToken = crypto.randomBytes(64).toString('hex'); // opaque random string
+
+    // Store HASHED refresh token in DB (never store plain text)
+    await this.tokenRepo.create({
+      userId: user.id,
+      tokenHash: await bcrypt.hash(refreshToken, 10),
+      expiresAt: addDays(new Date(), 30),
+      deviceInfo: userAgent, // optional: per-device tracking
+    });
+
+    return { accessToken, refreshToken };
+    // Send refreshToken as httpOnly cookie (not accessible to JS)
+    // res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict' })
+  }
+
+  // Refresh: validate, ROTATE (delete old, issue new pair)
+  async refresh(oldRefreshToken: string, userId: string) {
+    const records = await this.tokenRepo.findByUserId(userId);
+    const record = records.find(r =&gt; bcrypt.compareSync(oldRefreshToken, r.tokenHash));
+
+    if (!record || record.expiresAt &lt; new Date()) {
+      // Possible token theft — revoke ALL user sessions
+      await this.tokenRepo.deleteAllByUserId(userId);
+      throw new UnauthorizedException('Invalid or expired refresh token. Please log in again.');
+    }
+
+    // Rotation: delete used token immediately
+    await this.tokenRepo.delete(record.id);
+
+    // Issue fresh pair
+    const user = await this.usersService.findById(userId);
+    return this.login(user);
+  }
+
+  // Logout: delete refresh token from DB
+  async logout(refreshToken: string, userId: string) {
+    const records = await this.tokenRepo.findByUserId(userId);
+    const record = records.find(r =&gt; bcrypt.compareSync(refreshToken, r.tokenHash));
+    if (record) await this.tokenRepo.delete(record.id);
+  }
+}</pre>
+        <div class="warn"><strong>Security:</strong> If a refresh token is used twice (replayed), it's a sign of token theft. Revoke ALL tokens for that user and force re-login. This is called refresh token rotation.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c42">
+      <summary><span class="chk" onclick="td(event,'c42')"></span><span class="badge H">HIGH</span><span class="qa-q">OAuth2 Authorization Code Flow — step by step</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// FLOW (e.g., "Login with Google"):
+//
+// 1. User clicks "Login with Google"
+// 2. Your app redirects to Google:
+//    https://accounts.google.com/o/oauth2/auth?
+//      client_id=YOUR_CLIENT_ID&
+//      redirect_uri=https://yourapp.com/auth/callback&
+//      scope=openid email profile&
+//      response_type=code&
+//      state=RANDOM_CSRF_TOKEN   ← prevents CSRF attacks
+//
+// 3. User logs in on Google, approves scopes
+//
+// 4. Google redirects to your redirect_uri:
+//    https://yourapp.com/auth/callback?code=AUTH_CODE&state=CSRF_TOKEN
+//
+// 5. Verify state matches (CSRF protection!)
+//
+// 6. SERVER-TO-SERVER token exchange (client_secret never leaves server):
+//    POST https://oauth2.googleapis.com/token
+//    { code, client_id, client_secret, redirect_uri, grant_type: 'authorization_code' }
+//    → { access_token, id_token, refresh_token }
+//
+// 7. Verify id_token (JWT) — check signature, iss, aud, exp
+//    Extract: email, name, sub (Google user ID)
+//
+// 8. Find or create user in your DB
+// 9. Issue your own JWT access/refresh tokens
+
+// NestJS implementation:
+@Get('google')
+@UseGuards(AuthGuard('google'))
+googleAuth() {}  // redirect to Google handled by Passport
+
+@Get('google/callback')
+@UseGuards(AuthGuard('google'))
+async googleCallback(@Req() req, @Res() res: Response) {
+  const { accessToken, refreshToken } = await this.authService.login(req.user);
+  res.cookie('refresh_token', refreshToken, { httpOnly: true, secure: true });
+  res.redirect(`${process.env.FRONTEND_URL}?token=${accessToken}`);
+}</pre>
+        <div class="note"><strong>PKCE</strong> (Proof Key for Code Exchange) replaces client_secret for SPAs and mobile apps where the secret can't be kept safe. The app generates a code_verifier + code_challenge pair instead.</div>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c43">
+      <summary><span class="chk" onclick="td(event,'c43')"></span><span class="badge H">HIGH</span><span class="qa-q">OWASP Top 10 for Node.js/NestJS — what to know and fix</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <ul>
+          <li><strong>Injection</strong> — never interpolate user input into SQL/MongoDB queries. Use parameterized queries (<code>$1</code>), TypeORM/Prisma ORMs, or MongoDB's <code>$eq</code> operator.</li>
+          <li><strong>Broken Authentication</strong> — JWT must have expiry, strong secret, refresh rotation. Never store in localStorage (XSS risk). Use httpOnly cookies.</li>
+          <li><strong>IDOR (Broken Object Authorization)</strong> — always scope DB queries to current user. <code>findOne({ id, userId: req.user.id })</code> — never just <code>findOne(id)</code>.</li>
+          <li><strong>XSS</strong> — never render raw user content as HTML. Sanitize with DOMPurify. Set Content-Security-Policy header.</li>
+          <li><strong>Security Misconfiguration</strong> — no .env in git, disable stack traces in production, remove default credentials, set security headers (Helmet.js).</li>
+          <li><strong>Rate Limiting Missing</strong> — always rate limit: login, register, password reset, OTP endpoints.</li>
+          <li><strong>Sensitive Data Exposure</strong> — never log passwords, tokens, card numbers. Encrypt PII at rest. HTTPS everywhere.</li>
+        </ul>
+        <pre class="cb">// Helmet: set security headers automatically
+import helmet from '@fastify/helmet'; // or @nestjs/platform-express + helmet
+app.use(helmet());
+// Sets: X-Frame-Options, X-Content-Type-Options, CSP, HSTS, etc.
+
+// IDOR fix:
+// WRONG — any user can access any document by guessing ID
+@Get('docs/:id')
+getDoc(@Param('id') id: string) {
+  return this.docs.findById(id); // no user check!
+}
+
+// CORRECT
+@Get('docs/:id')
+@UseGuards(JwtAuthGuard)
+getDoc(@Param('id') id: string, @CurrentUser() user: AuthUser) {
+  return this.docs.findOne({ id, userId: user.id }); // 404 if not owner
+}
+
+// Environment: never log sensitive data
+// BAD:
+console.log('Login attempt:', { email, password }); // logs plaintext password!
+
+// GOOD:
+this.logger.log({ message: 'Login attempt', email, ip: req.ip });</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c44">
+      <summary><span class="chk" onclick="td(event,'c44')"></span><span class="badge M">MED</span><span class="qa-q">RBAC in NestJS — roles, custom decorator, guard</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// 1. Define roles
+export enum Role { SUPER_ADMIN = 'super_admin', ADMIN = 'admin', USER = 'user' }
+
+// 2. Custom decorator: attach required roles to route metadata
+export const Roles = (...roles: Role[]) =&gt; SetMetadata('roles', roles);
+
+// 3. RolesGuard: read metadata, check user's roles
+@Injectable()
+export class RolesGuard implements CanActivate {
+  constructor(private reflector: Reflector) {}
+
+  canActivate(ctx: ExecutionContext): boolean {
+    // Read roles from both handler-level and class-level metadata
+    const required = this.reflector.getAllAndOverride&lt;Role[]&gt;('roles', [
+      ctx.getHandler(),
+      ctx.getClass(),
+    ]);
+
+    if (!required || required.length === 0) return true; // no restriction
+
+    const { user } = ctx.switchToHttp().getRequest();
+    if (!user) return false;
+
+    return required.some(role =&gt; user.roles?.includes(role));
+  }
+}
+
+// 4. Register globally AFTER JwtAuthGuard (order matters)
+app.useGlobalGuards(
+  new JwtAuthGuard(jwtService),  // 1st: authenticate
+  new RolesGuard(reflector),     // 2nd: authorize
+);
+
+// 5. Use in controllers
+@Controller('admin')
+@Roles(Role.ADMIN)  // class-level: all routes require ADMIN
+export class AdminController {
+  @Get('users')
+  findAll() { return this.usersService.findAll(); }
+
+  @Delete('users/:id')
+  @Roles(Role.SUPER_ADMIN)  // route-level override: requires SUPER_ADMIN
+  deleteUser(@Param('id') id: string) { return this.usersService.delete(id); }
+}</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ SYSTEM DESIGN -->
+<section class="section" id="design">
+  <div class="sec-hdr"><span class="sec-tag">Design</span><span class="sec-title">System Design</span><span class="sec-ct">5 questions</span></div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c45">
+      <summary><span class="chk" onclick="td(event,'c45')"></span><span class="badge H">HIGH</span><span class="qa-q">Design a URL Shortener — schema, flow, scale</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p><strong>Requirements:</strong> shorten long URLs, redirect on visit, click analytics. 10M URLs stored, 1000 reads/sec.</p>
+        <h4>Key decisions</h4>
+        <ul>
+          <li><strong>Short code:</strong> Base62 counter (a-z A-Z 0-9). 7 chars = 62^7 = 3.5T combinations. Simpler than hashing, no collisions.</li>
+          <li><strong>Redirect type:</strong> 301 (permanent — browser caches, less analytics) vs 302 (temporary — every visit hits server, better for analytics). Use 302.</li>
+          <li><strong>Cache:</strong> Redis with <code>short_code → long_url</code>. Read-heavy, target &gt;99% hit rate.</li>
+        </ul>
+        <pre class="cb">-- Schema
+CREATE TABLE short_urls (
+  id          BIGSERIAL PRIMARY KEY,
+  short_code  VARCHAR(10) UNIQUE NOT NULL,  -- indexed
+  long_url    TEXT NOT NULL,
+  user_id     UUID REFERENCES users(id),
+  expires_at  TIMESTAMPTZ,
+  created_at  TIMESTAMPTZ DEFAULT NOW(),
+  click_count BIGINT DEFAULT 0
+);
+
+-- Short code generation: encode id in Base62
+function toBase62(num: number): string {
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  while (num &gt; 0) { result = chars[num % 62] + result; num = Math.floor(num / 62); }
+  return result.padStart(7, '0');
+}
+
+// GET /r/:code — redirect flow
+async redirect(code: string, res: Response) {
+  // 1. Check Redis cache
+  let longUrl = await redis.get(`url:${code}`);
+
+  if (!longUrl) {
+    // 2. Cache miss: query DB
+    const url = await db.query('SELECT long_url, expires_at FROM short_urls WHERE short_code=$1', [code]);
+    if (!url || (url.expires_at &amp;&amp; url.expires_at &lt; new Date())) throw new NotFoundException();
+
+    longUrl = url.long_url;
+    await redis.setex(`url:${code}`, 86400, longUrl); // cache 24h
+  }
+
+  // 3. Redirect immediately — don't wait for analytics
+  res.redirect(302, longUrl);
+
+  // 4. Track click asynchronously (BullMQ job)
+  await this.analyticsQueue.add('track-click', { code, ip, userAgent, timestamp: Date.now() });
+}
+
+// Scale: Read replicas for DB, Redis cluster, CDN for static assets
+// Custom domains: DNS CNAME to your service, lookup by hostname in DB</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c46">
+      <summary><span class="chk" onclick="td(event,'c46')"></span><span class="badge H">HIGH</span><span class="qa-q">Design a Real-Time Notification System</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p><strong>Requirements:</strong> push events to connected users, deliver missed notifications on reconnect, work across multiple servers.</p>
+        <pre class="cb">// Architecture:
+//
+// [Any Service] → INSERT notification → PUBLISH to Redis channel
+//     ↓
+// [Redis Pub/Sub]
+//     ↓
+// [SSE Handler on user's server] → stream to client
+//
+// Reconnect: client sends Last-Event-ID → server replays from DB
+
+-- Schema
+CREATE TABLE notifications (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id    UUID NOT NULL,
+  type       VARCHAR(50) NOT NULL,  -- 'order_confirmed', 'payment_failed', etc.
+  payload    JSONB NOT NULL,
+  read_at    TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX idx_notif_user_unread ON notifications(user_id, created_at)
+  WHERE read_at IS NULL;
+
+// Notification service (publisher — runs on any server)
+async function notifyUser(userId: string, type: string, payload: object) {
+  const notification = await db.notifications.create({ userId, type, payload });
+  // Publish to Redis — whichever server has the SSE connection will forward it
+  await redis.publish(`user:${userId}:events`, JSON.stringify(notification));
+}
+
+// SSE endpoint (subscriber)
+@Get('stream')
+@Sse()
+async stream(@CurrentUser() user: User, @Query('lastId') lastId?: string): Observable&lt;MessageEvent&gt; {
+  return new Observable(observer =&gt; {
+    // 1. Replay missed notifications
+    if (lastId) {
+      this.notifRepo.findAfter(user.id, lastId).then(missed =&gt;
+        missed.forEach(n =&gt; observer.next({ id: n.id, data: n }))
+      );
+    }
+
+    // 2. Subscribe to live events
+    const sub = redis.duplicate();
+    sub.subscribe(`user:${user.id}:events`);
+    sub.on('message', (_, msg) =&gt; {
+      const notif = JSON.parse(msg);
+      observer.next({ id: notif.id, data: notif }); // id enables Last-Event-ID
+    });
+
+    return () =&gt; { sub.unsubscribe(); sub.quit(); };
+  });
+}
+
+// Scale: each server subscribes to Redis for its connected users
+// WebSockets alternative: use socket.io with Redis adapter (@socket.io/redis-adapter)</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c47">
+      <summary><span class="chk" onclick="td(event,'c47')"></span><span class="badge H">HIGH</span><span class="qa-q">Design a Multi-Tenant SaaS Backend</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <h4>3 isolation models</h4>
+        <div class="tbl"><table>
+          <tr><th>Model</th><th>Isolation</th><th>Cost</th><th>Migration complexity</th></tr>
+          <tr><td>Separate databases</td><td>Max</td><td>High (N databases)</td><td>High</td></tr>
+          <tr><td>Separate schemas (PostgreSQL)</td><td>High</td><td>Medium</td><td>Medium</td></tr>
+          <tr><td>Shared schema + tenant_id + RLS</td><td>Medium (enforced by DB)</td><td>Low</td><td>Low</td></tr>
+        </table></div>
+        <pre class="cb">// Shared schema (most common for B2B SaaS):
+
+-- Tenant table
+CREATE TABLE tenants (
+  id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug     VARCHAR(63) UNIQUE NOT NULL,  -- acme, globocorp
+  plan     VARCHAR(20) DEFAULT 'starter', -- starter, pro, enterprise
+  settings JSONB DEFAULT '{}',
+  active   BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- All tables have tenant_id + RLS
+ALTER TABLE workspaces ENABLE ROW LEVEL SECURITY;
+CREATE POLICY tenant_isolation ON workspaces
+  USING (tenant_id = current_setting('app.tenant_id')::uuid);
+
+// Tenant resolution middleware
+@Injectable()
+export class TenantMiddleware implements NestMiddleware {
+  async use(req: Request, res: Response, next: NextFunction) {
+    // Subdomain: acme.yoursaas.com
+    const host = req.hostname;
+    const slug = host.split('.')[0];
+
+    // Cache tenant lookup in Redis (avoid DB hit every request)
+    let tenant = JSON.parse(await redis.get(`tenant:${slug}`) || 'null');
+    if (!tenant) {
+      tenant = await this.tenantRepo.findBySlug(slug);
+      if (!tenant) throw new NotFoundException('Tenant not found');
+      await redis.setex(`tenant:${slug}`, 300, JSON.stringify(tenant)); // 5min cache
+    }
+
+    req['tenant'] = tenant;
+    await this.db.query("SELECT set_config('app.tenant_id',$1,true)", [tenant.id]);
+    next();
+  }
+}
+
+// Per-tenant limits (plan enforcement):
+@Injectable()
+export class PlanGuard implements CanActivate {
+  canActivate(ctx: ExecutionContext): boolean {
+    const tenant = ctx.switchToHttp().getRequest()['tenant'];
+    const required = this.reflector.get&lt;string&gt;('plan', ctx.getHandler());
+    const planOrder = ['starter', 'pro', 'enterprise'];
+    return planOrder.indexOf(tenant.plan) &gt;= planOrder.indexOf(required);
+  }
+}
+
+@Post('ai-analysis')
+@RequiresPlan('pro')  // custom decorator
+async runAnalysis() { ... }</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c48">
+      <summary><span class="chk" onclick="td(event,'c48')"></span><span class="badge H">HIGH</span><span class="qa-q">Design a Rate Limiter — algorithms and trade-offs</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th>Algorithm</th><th>Accuracy</th><th>Memory</th><th>Burst</th></tr>
+          <tr><td>Fixed Window</td><td>Low (boundary burst)</td><td>O(1)</td><td>Allows 2x at boundary</td></tr>
+          <tr><td>Sliding Window Log</td><td>Exact</td><td>O(N) — stores every req</td><td>None</td></tr>
+          <tr><td>Sliding Window Counter</td><td>~99%</td><td>O(1)</td><td>None</td></tr>
+          <tr><td>Token Bucket</td><td>High</td><td>O(1)</td><td>Controlled burst</td></tr>
+          <tr><td>Leaky Bucket</td><td>High</td><td>O(N)</td><td>None (smoothed)</td></tr>
+        </table></div>
+        <pre class="cb">// Sliding Window Counter (best balance of accuracy + memory):
+// Approximates: count = current_window_count + prev_window_count × overlap_ratio
+
+async function slidingWindowCounter(key: string, limit: number, windowSec: number) {
+  const now = Date.now();
+  const windowMs = windowSec * 1000;
+  const current = Math.floor(now / windowMs);
+  const overlap = 1 - (now % windowMs) / windowMs; // how much of prev window overlaps
+
+  const prevKey = `rl:${key}:${current - 1}`;
+  const currKey = `rl:${key}:${current}`;
+
+  const [prevCount, currCount] = await redis.mget(prevKey, currKey);
+  const approxCount = Math.floor((parseInt(prevCount||'0') * overlap) + parseInt(currCount||'0'));
+
+  if (approxCount &gt;= limit) return false;
+
+  await redis.multi().incr(currKey).expire(currKey, windowSec * 2).exec();
+  return true;
+}
+
+// Distributed rate limiter with Lua script (atomic across Redis nodes):
+const luaScript = `
+  local key = KEYS[1]
+  local limit = tonumber(ARGV[1])
+  local window = tonumber(ARGV[2])
+  local current = redis.call('INCR', key)
+  if current == 1 then redis.call('EXPIRE', key, window) end
+  return current &lt;= limit and 1 or 0
+`;
+
+async function atomicRateLimit(key: string, limit: number, window: number) {
+  return await redis.eval(luaScript, 1, key, limit, window) === 1;
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c49">
+      <summary><span class="chk" onclick="td(event,'c49')"></span><span class="badge M">MED</span><span class="qa-q">Horizontal vs Vertical scaling — when to choose each</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th></th><th>Vertical (scale up)</th><th>Horizontal (scale out)</th></tr>
+          <tr><td>What</td><td>Bigger machine (more CPU/RAM)</td><td>More machines (add instances)</td></tr>
+          <tr><td>Complexity</td><td>Simple — no app changes</td><td>App must be stateless</td></tr>
+          <tr><td>Limit</td><td>Hardware ceiling</td><td>Theoretically unlimited</td></tr>
+          <tr><td>Cost</td><td>Linear or superlinear</td><td>Linear</td></tr>
+          <tr><td>Downtime</td><td>Restart required</td><td>Rolling deploy, zero downtime</td></tr>
+        </table></div>
+        <ul>
+          <li><strong>For NestJS apps:</strong> Make them stateless — no in-memory sessions, no local file storage. Use Redis for sessions/cache, S3/DigitalOcean Spaces for files.</li>
+          <li><strong>For databases:</strong> Vertical first (it's simpler), then read replicas for read-heavy workloads, then sharding if truly needed.</li>
+          <li><strong>For Redis:</strong> Redis Cluster for horizontal scaling of cache/queues.</li>
+          <li><strong>Load balancer:</strong> Nginx (what you use), or AWS ALB/DigitalOcean Load Balancer in front of multiple Node instances.</li>
+        </ul>
+        <pre class="cb">// Stateless session — don't store in memory, use Redis
+// BAD: in-memory sessions (breaks horizontal scaling)
+const sessions = new Map&lt;string, User&gt;(); // lost on restart/different instance
+
+// GOOD: Redis sessions
+await redis.setex(`session:${token}`, 3600, JSON.stringify(user));
+const user = JSON.parse(await redis.get(`session:${token}`));
+
+// Sticky sessions (avoid): force user to same server
+// Alternative: stateless JWT or Redis-backed sessions</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ AI & LLM -->
+<section class="section" id="ai">
+  <div class="sec-hdr"><span class="sec-tag">AI/LLM</span><span class="sec-title">AI &amp; LLM Engineering</span><span class="sec-ct">4 questions</span></div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c50">
+      <summary><span class="chk" onclick="td(event,'c50')"></span><span class="badge H">HIGH</span><span class="qa-q">LangGraph — state machines, nodes, conditional routing, persistence</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">import { StateGraph, Annotation, START, END } from '@langchain/langgraph';
+import { BaseMessage } from '@langchain/core/messages';
+
+// 1. Define state — the data that flows through the graph
+const AgentState = Annotation.Root({
+  // reducer: how to merge state updates (append messages)
+  messages: Annotation&lt;BaseMessage[]&gt;({ reducer: (a, b) =&gt; a.concat(b) }),
+  leadData: Annotation&lt;Lead | null&gt;({ default: () =&gt; null }),
+  decision:  Annotation&lt;'send_email' | 'create_task' | 'discard' | null&gt;({ default: () =&gt; null }),
+  retryCount: Annotation&lt;number&gt;({ default: () =&gt; 0 }),
+});
+
+// 2. Define nodes — async functions, return partial state
+async function qualifyLead(state: typeof AgentState.State) {
+  const response = await anthropic.messages.create({
+    model: 'claude-opus-4-8',
+    system: 'Qualify sales leads. Respond with JSON: { decision, reasoning }',
+    messages: [{ role: 'user', content: JSON.stringify(state.leadData) }],
+  });
+
+  const { decision } = JSON.parse(response.content[0].text);
+  return { decision, messages: [response] };
+}
+
+async function sendEmail(state: typeof AgentState.State) {
+  await emailService.sendOutreach(state.leadData);
+  return {}; // no state change needed
+}
+
+async function createTask(state: typeof AgentState.State) {
+  await crmService.createFollowUpTask(state.leadData);
+  return {};
+}
+
+// 3. Routing function — decides next node based on state
+function route(state: typeof AgentState.State): string {
+  if (state.decision === 'send_email') return 'emailNode';
+  if (state.decision === 'create_task') return 'taskNode';
+  return END; // discard
+}
+
+// 4. Build and compile graph
+const graph = new StateGraph(AgentState)
+  .addNode('qualify', qualifyLead)
+  .addNode('emailNode', sendEmail)
+  .addNode('taskNode', createTask)
+  .addEdge(START, 'qualify')
+  .addConditionalEdges('qualify', route, {
+    emailNode: 'emailNode',
+    taskNode:  'taskNode',
+    [END]:     END,
+  })
+  .addEdge('emailNode', END)
+  .addEdge('taskNode', END)
+  .compile();
+
+// 5. Execute
+const result = await graph.invoke({
+  leadData: { name: 'John', email: 'john@company.com', company: 'Acme' },
+  messages: [],
+});</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c51">
+      <summary><span class="chk" onclick="td(event,'c51')"></span><span class="badge H">HIGH</span><span class="qa-q">RAG architecture — ingestion pipeline, chunking, retrieval, generation</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// ── INGESTION PIPELINE (one-time / on document update) ──
+
+// 1. Load document
+const rawText = await pdfParse(fileBuffer);
+
+// 2. Chunk — split into overlapping pieces (overlap preserves context at boundaries)
+function chunkText(text: string, size = 800, overlap = 150): string[] {
+  const chunks = [];
+  for (let i = 0; i &lt; text.length; i += size - overlap) {
+    chunks.push(text.slice(i, i + size));
+    if (i + size &gt;= text.length) break;
+  }
+  return chunks;
+}
+
+// 3. Embed each chunk
+async function embedChunks(chunks: string[]) {
+  const response = await openai.embeddings.create({
+    model: 'text-embedding-3-small', // 1536 dimensions
+    input: chunks,
+  });
+  return response.data.map(d =&gt; d.embedding);
+}
+
+// 4. Store in PostgreSQL with pgvector
+const chunks = chunkText(rawText);
+const embeddings = await embedChunks(chunks);
+
+for (let i = 0; i &lt; chunks.length; i++) {
+  await db.query(
+    'INSERT INTO doc_chunks (doc_id, content, embedding, chunk_index) VALUES ($1,$2,$3,$4)',
+    [docId, chunks[i], JSON.stringify(embeddings[i]), i]
+  );
+}
+
+// ── RETRIEVAL + GENERATION (per query) ──
+
+async function answer(question: string): Promise&lt;string&gt; {
+  // 1. Embed the question
+  const { data } = await openai.embeddings.create({
+    model: 'text-embedding-3-small', input: question
+  });
+  const questionVec = data[0].embedding;
+
+  // 2. Find most similar chunks (cosine similarity)
+  const results = await db.query(`
+    SELECT content, 1 - (embedding &lt;=&gt; $1::vector) AS similarity
+    FROM doc_chunks
+    ORDER BY embedding &lt;=&gt; $1::vector
+    LIMIT 5
+  `, [JSON.stringify(questionVec)]);
+
+  // 3. Build context from top chunks
+  const context = results.rows.map(r =&gt; r.content).join('\n\n---\n\n');
+
+  // 4. Generate answer grounded in context (reduces hallucination)
+  const response = await anthropic.messages.create({
+    model: 'claude-opus-4-8',
+    max_tokens: 1024,
+    messages: [{
+      role: 'user',
+      content: `Answer using ONLY this context:\n\n${context}\n\nQuestion: ${question}\n\nIf the answer isn't in the context, say "I don't have that information."`
+    }]
+  });
+
+  return response.content[0].text;
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c52">
+      <summary><span class="chk" onclick="td(event,'c52')"></span><span class="badge H">HIGH</span><span class="qa-q">MCP (Model Context Protocol) — what it is and how to build a server</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p>MCP is an open standard by Anthropic that lets AI models connect to external tools and data sources through a unified protocol. Instead of writing custom tool integrations per-application, you build one MCP server and any compatible client (Claude, Claude Code, custom agents) can use it.</p>
+        <pre class="cb">import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
+
+const server = new McpServer({
+  name: 'crm-mcp-server',
+  version: '1.0.0',
+});
+
+// TOOL: an action the LLM can invoke (like a function call)
+server.tool(
+  'search_leads',             // name
+  'Search CRM leads by query', // description (LLM reads this to decide when to use it)
+  {
+    query:  z.string().describe('Search query (name, email, company)'),
+    limit:  z.number().default(10).describe('Max results'),
+    status: z.enum(['new','qualified','closed']).optional(),
+  },
+  async ({ query, limit, status }) =&gt; {
+    const leads = await db.leads.search({ query, limit, status });
+    return {
+      content: [{ type: 'text', text: JSON.stringify(leads, null, 2) }]
+    };
+  }
+);
+
+// RESOURCE: readable data the LLM can access (like a URL)
+server.resource(
+  'crm://pipeline',
+  'Current sales pipeline summary',
+  async () =&gt; ({
+    contents: [{
+      uri: 'crm://pipeline',
+      text: JSON.stringify(await getPipelineSummary()),
+    }]
+  })
+);
+
+// PROMPT: reusable prompt template with parameters
+server.prompt(
+  'analyze_lead',
+  'Analyze a lead and recommend next action',
+  { leadId: z.string() },
+  async ({ leadId }) =&gt; {
+    const lead = await db.leads.findById(leadId);
+    return {
+      messages: [{
+        role: 'user',
+        content: { type: 'text', text: `Analyze and recommend action for: ${JSON.stringify(lead)}` }
+      }]
+    };
+  }
+);
+
+// Connect via stdio (for Claude Desktop / Claude Code)
+const transport = new StdioServerTransport();
+await server.connect(transport);</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c53">
+      <summary><span class="chk" onclick="td(event,'c53')"></span><span class="badge H">HIGH</span><span class="qa-q">LLM Streaming — SSE from NestJS to React with real-time display</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// ── NestJS: stream Claude response as SSE ──
+@Controller('chat')
+export class ChatController {
+  @Get('stream')
+  @Sse()
+  @UseGuards(JwtAuthGuard)
+  async stream(
+    @Query('message') message: string,
+    @CurrentUser() user: User,
+  ): Observable&lt;MessageEvent&gt; {
+    // Save to conversation history
+    await this.messagesRepo.create({ userId: user.id, role: 'user', content: message });
+
+    return new Observable(observer =&gt; {
+      let fullResponse = '';
+
+      (async () =&gt; {
+        try {
+          const history = await this.messagesRepo.findByUser(user.id, { limit: 10 });
+
+          const stream = anthropic.messages.stream({
+            model: 'claude-opus-4-8',
+            max_tokens: 4096,
+            system: 'You are a helpful AI assistant.',
+            messages: history.map(m =&gt; ({ role: m.role, content: m.content })),
+          });
+
+          for await (const event of stream) {
+            if (event.type === 'content_block_delta' &amp;&amp; event.delta.type === 'text_delta') {
+              fullResponse += event.delta.text;
+              observer.next({ data: { type: 'delta', text: event.delta.text } });
+            }
+          }
+
+          // Save assistant response
+          await this.messagesRepo.create({ userId: user.id, role: 'assistant', content: fullResponse });
+          observer.next({ data: { type: 'done', totalTokens: stream.inputTokens + stream.outputTokens } });
+          observer.complete();
+        } catch (err) {
+          observer.next({ data: { type: 'error', message: 'Stream failed' } });
+          observer.complete();
+        }
+      })();
+    });
+  }
+}
+
+// ── React: consume SSE with hooks ──
+function useStreamingChat() {
+  const [messages, setMessages] = useState&lt;Message[]&gt;([]);
+  const [streaming, setStreaming] = useState(false);
+
+  const sendMessage = async (content: string) =&gt; {
+    setStreaming(true);
+    setMessages(prev =&gt; [...prev,
+      { role: 'user', content },
+      { role: 'assistant', content: '' } // placeholder
+    ]);
+
+    const es = new EventSource(`/chat/stream?message=${encodeURIComponent(content)}`, {
+      // withCredentials: true  // for cookies
+    });
+
+    es.onmessage = (e) =&gt; {
+      const data = JSON.parse(e.data);
+      if (data.type === 'delta') {
+        setMessages(prev =&gt; {
+          const updated = [...prev];
+          updated[updated.length - 1].content += data.text;
+          return updated;
+        });
+      }
+      if (data.type === 'done') { es.close(); setStreaming(false); }
+      if (data.type === 'error') { es.close(); setStreaming(false); }
+    };
+
+    es.onerror = () =&gt; { es.close(); setStreaming(false); };
+  };
+
+  return { messages, streaming, sendMessage };
+}</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ REACT & NEXT.JS -->
+<section class="section" id="react">
+  <div class="sec-hdr"><span class="sec-tag">React</span><span class="sec-title">React &amp; Next.js</span><span class="sec-ct">5 questions</span></div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c54">
+      <summary><span class="chk" onclick="td(event,'c54')"></span><span class="badge H">HIGH</span><span class="qa-q">useMemo vs useCallback — when to use and when NOT to</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// useMemo: memoizes the RETURN VALUE of a computation
+const sortedUsers = useMemo(() =&gt; {
+  return [...users].sort((a, b) =&gt; a.name.localeCompare(b.name));
+}, [users]); // re-sorts ONLY when users array reference changes
+
+// useCallback: memoizes the FUNCTION REFERENCE itself
+const handleDelete = useCallback(async (id: string) =&gt; {
+  await api.deleteUser(id);
+  refetch();
+}, [refetch]); // same function reference until refetch changes
+
+// WHY THEY MATTER: React.memo + stable references
+const UserRow = React.memo(({ user, onDelete }) =&gt; {
+  // Only re-renders if user or onDelete reference changes
+  return &lt;div&gt;{user.name} &lt;button onClick={() =&gt; onDelete(user.id)}&gt;Delete&lt;/button&gt;&lt;/div&gt;;
+});
+
+// WITHOUT useCallback: new function on every render → UserRow always re-renders
+// WITH useCallback: stable reference → UserRow skips re-render
+
+// ── WHEN NOT TO USE THEM ──
+// BAD: memoizing trivial computation (memoization itself has cost)
+const doubled = useMemo(() =&gt; count * 2, [count]); // wasteful
+// GOOD: just compute it
+const doubled = count * 2;
+
+// BAD: useMemo for non-expensive computations
+const filtered = useMemo(() =&gt; users.filter(u =&gt; u.active), [users]); // fine without memo for &lt;100 items
+
+// RULE: profile first, memoize when you measure a performance issue
+// useMemo: computation takes &gt;1ms OR result is used as a dep in other hooks
+// useCallback: function passed to React.memo children OR used in useEffect deps</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c55">
+      <summary><span class="chk" onclick="td(event,'c55')"></span><span class="badge H">HIGH</span><span class="qa-q">SSR vs SSG vs ISR vs CSR — Next.js App Router patterns</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th>Mode</th><th>HTML generated</th><th>Data freshness</th><th>Best for</th></tr>
+          <tr><td>SSG</td><td>Build time</td><td>Static until redeploy</td><td>Docs, blog posts, marketing pages</td></tr>
+          <tr><td>ISR</td><td>Build + background revalidation</td><td>Fresh within TTL (e.g., 60s)</td><td>Product pages, prices, public profiles</td></tr>
+          <tr><td>SSR</td><td>Every request</td><td>Always fresh</td><td>User-specific pages, cart, settings</td></tr>
+          <tr><td>CSR</td><td>Empty shell (client fetches)</td><td>Fetched by browser</td><td>Dashboards behind auth, complex interactivity</td></tr>
+        </table></div>
+        <pre class="cb">// Next.js 14 App Router (these are all server components by default)
+
+// SSG: no cache option = cached at build time (default)
+async function BlogPage({ params }: { params: { slug: string } }) {
+  const post = await fetch(`https://cms/posts/${params.slug}`).then(r =&gt; r.json());
+  return &lt;Article post={post} /&gt;;
+}
+// Generate static paths:
+export async function generateStaticParams() {
+  const posts = await getAllSlugs();
+  return posts.map(slug =&gt; ({ slug }));
+}
+
+// ISR: revalidate every N seconds in background
+async function ProductPage({ params }: { params: { id: string } }) {
+  const product = await fetch(`/api/products/${params.id}`, {
+    next: { revalidate: 60 } // refresh every 60s
+  }).then(r =&gt; r.json());
+  return &lt;Product data={product} /&gt;;
+}
+
+// SSR: fresh on every request
+async function DashboardPage() {
+  const data = await fetch('/api/dashboard', {
+    cache: 'no-store'  // never cache
+  }).then(r =&gt; r.json());
+  return &lt;Dashboard data={data} /&gt;;
+}
+
+// Or with cookies (automatically becomes SSR):
+import { cookies } from 'next/headers';
+async function ProfilePage() {
+  const token = cookies().get('access_token');
+  const user = await fetchUser(token.value); // SSR because reads cookies
+  return &lt;Profile user={user} /&gt;;
+}
+
+// CSR: 'use client' + data fetching in component
+'use client';
+function AnalyticsDashboard() {
+  const { data } = useSWR('/api/analytics', fetcher);
+  return &lt;Charts data={data} /&gt;;
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c56">
+      <summary><span class="chk" onclick="td(event,'c56')"></span><span class="badge H">HIGH</span><span class="qa-q">React Server Components — zero JS bundle, direct DB access, composition pattern</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <div class="tbl"><table>
+          <tr><th></th><th>Server Component (default)</th><th>Client Component ('use client')</th></tr>
+          <tr><td>Renders on</td><td>Server only</td><td>Server (HTML) + Client (hydrated)</td></tr>
+          <tr><td>JS bundle</td><td>Zero (not shipped to browser)</td><td>Included in bundle</td></tr>
+          <tr><td>Can use</td><td>async/await, DB, fs, env secrets</td><td>useState, useEffect, event handlers, browser APIs</td></tr>
+          <tr><td>Cannot use</td><td>useState, useEffect, onClick, browser APIs</td><td>Direct DB, server-only modules</td></tr>
+        </table></div>
+        <pre class="cb">// Server Component: async, direct DB, no API route needed
+// app/dashboard/page.tsx
+import { prisma } from '@/lib/db';
+
+async function DashboardPage() {
+  // Direct DB query — zero API overhead
+  const [users, orders, revenue] = await Promise.all([
+    prisma.user.count(),
+    prisma.order.count({ where: { status: 'completed' } }),
+    prisma.order.aggregate({ _sum: { amount: true } }),
+  ]);
+
+  return (
+    &lt;div&gt;
+      &lt;StatsRow users={users} orders={orders} revenue={revenue._sum.amount} /&gt;
+      &lt;OrdersTable /&gt;      {/* another Server Component */}
+      &lt;FilterBar /&gt;        {/* Client Component — needs interactivity */}
+    &lt;/div&gt;
+  );
+}
+
+// Client Component: only for interactivity
+// components/filter-bar.tsx
+'use client';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+export function FilterBar() {
+  const router = useRouter();
+  const params = useSearchParams();
+
+  return (
+    &lt;input
+      defaultValue={params.get('search') || ''}
+      onChange={e =&gt; router.push(`?search=${e.target.value}`)}
+      placeholder="Search..."
+    /&gt;
+  );
+}
+
+// PATTERN: push 'use client' as far DOWN the tree as possible
+// Keep data fetching in Server Components, interactivity in leaf Client Components
+// This maximizes server rendering and minimizes JS bundle</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c57">
+      <summary><span class="chk" onclick="td(event,'c57')"></span><span class="badge H">HIGH</span><span class="qa-q">RTK Query — caching, invalidation, optimistic updates</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Define API slice
+const api = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({
+    baseUrl: '/api',
+    prepareHeaders: (headers, { getState }) =&gt; {
+      const token = (getState() as RootState).auth.accessToken;
+      if (token) headers.set('Authorization', `Bearer ${token}`);
+      return headers;
+    },
+  }),
+  tagTypes: ['User', 'Order', 'Notification'],
+  endpoints: builder =&gt; ({
+    // Query: GET request, cached by tags
+    getUser: builder.query&lt;User, string&gt;({
+      query: id =&gt; `users/${id}`,
+      providesTags: (result, err, id) =&gt; [{ type: 'User', id }],
+      keepUnusedDataFor: 300, // keep cache 5min after last subscriber
+    }),
+
+    listUsers: builder.query&lt;User[], void&gt;({
+      query: () =&gt; 'users',
+      providesTags: result =&gt; result
+        ? [...result.map(({ id }) =&gt; ({ type: 'User' as const, id })), 'User']
+        : ['User'],
+    }),
+
+    // Mutation: POST/PATCH/DELETE — invalidates related cache
+    updateUser: builder.mutation&lt;User, Partial&lt;User&gt; &amp; Pick&lt;User, 'id'&gt;&gt;({
+      query: ({ id, ...data }) =&gt; ({ url: `users/${id}`, method: 'PATCH', body: data }),
+      // Invalidate: all queries with matching tags will refetch
+      invalidatesTags: (result, err, { id }) =&gt; [{ type: 'User', id }, 'User'],
+    }),
+
+    // Optimistic update: update UI immediately, rollback on error
+    deleteUser: builder.mutation&lt;void, string&gt;({
+      query: id =&gt; ({ url: `users/${id}`, method: 'DELETE' }),
+      async onQueryStarted(id, { dispatch, queryFulfilled }) {
+        // Optimistically remove from list
+        const patch = dispatch(api.util.updateQueryData('listUsers', undefined, draft =&gt; {
+          const idx = draft.findIndex(u =&gt; u.id === id);
+          if (idx !== -1) draft.splice(idx, 1);
+        }));
+        try { await queryFulfilled; }
+        catch { patch.undo(); } // rollback on error
+      },
+      invalidatesTags: (result, err, id) =&gt; [{ type: 'User', id }],
+    }),
+  }),
+});
+
+export const { useGetUserQuery, useListUsersQuery, useUpdateUserMutation, useDeleteUserMutation } = api;
+
+// Usage in component:
+function UserProfile({ userId }: { userId: string }) {
+  const { data: user, isLoading, isFetching } = useGetUserQuery(userId, {
+    pollingInterval: 30000,           // refetch every 30s
+    refetchOnMountOrArgChange: true,  // refetch when id changes
+  });
+  const [updateUser, { isLoading: saving }] = useUpdateUserMutation();
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c58">
+      <summary><span class="chk" onclick="td(event,'c58')"></span><span class="badge M">MED</span><span class="qa-q">React performance — rendering, memo, virtualization, lazy loading</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// 1. React.memo — prevent re-render when props haven't changed
+const UserCard = React.memo(({ user, onSelect }: Props) =&gt; {
+  return &lt;div onClick={() =&gt; onSelect(user.id)}&gt;{user.name}&lt;/div&gt;;
+}, (prevProps, nextProps) =&gt; {
+  // Optional: custom comparison (return true = skip re-render)
+  return prevProps.user.id === nextProps.user.id &amp;&amp; prevProps.user.updatedAt === nextProps.user.updatedAt;
+});
+
+// 2. Virtualization — render only visible items (critical for long lists)
+import { useVirtualizer } from '@tanstack/react-virtual';
+
+function BigList({ items }: { items: Item[] }) {
+  const parentRef = useRef&lt;HTMLDivElement&gt;(null);
+  const virtualizer = useVirtualizer({
+    count: items.length,
+    getScrollElement: () =&gt; parentRef.current,
+    estimateSize: () =&gt; 60, // estimated row height
+  });
+
+  return (
+    &lt;div ref={parentRef} style={{ height: '600px', overflow: 'auto' }}&gt;
+      &lt;div style={{ height: virtualizer.getTotalSize() }}&gt;
+        {virtualizer.getVirtualItems().map(item =&gt; (
+          &lt;div key={item.key} style={{ transform: `translateY(${item.start}px)` }}&gt;
+            &lt;UserCard user={items[item.index]} /&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+}
+
+// 3. Code splitting / lazy loading
+const HeavyChart = React.lazy(() =&gt; import('./HeavyChart'));
+function Dashboard() {
+  return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+      &lt;HeavyChart /&gt; {/* only loaded when rendered */}
+    &lt;/Suspense&gt;
+  );
+}
+
+// 4. Avoid common mistakes:
+// BAD: inline object = new reference every render → child always re-renders
+&lt;UserCard style={{ margin: 8 }} /&gt; // new object each render
+
+// GOOD: define outside component or useMemo
+const cardStyle = { margin: 8 }; // stable reference
+&lt;UserCard style={cardStyle} /&gt;</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════ DSA -->
+<section class="section" id="dsa">
+  <div class="sec-hdr"><span class="sec-tag">DSA</span><span class="sec-title">Data Structures &amp; Algorithms</span><span class="sec-ct">6 questions</span></div>
+  <div class="qa-list">
+
+    <details class="qa-card" id="c59">
+      <summary><span class="chk" onclick="td(event,'c59')"></span><span class="badge H">HIGH</span><span class="qa-q">Hash Map pattern — Two Sum, Group Anagrams, frequency counting</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p><strong>Pattern:</strong> "find pair / complement / count" → store values in a Map for O(1) lookup instead of O(n) nested loop.</p>
+        <pre class="cb">// Two Sum: find indices where nums[i] + nums[j] = target
+// O(n) time, O(n) space
+function twoSum(nums: number[], target: number): number[] {
+  const seen = new Map&lt;number, number&gt;(); // value → index
+  for (let i = 0; i &lt; nums.length; i++) {
+    const complement = target - nums[i];
+    if (seen.has(complement)) return [seen.get(complement)!, i];
+    seen.set(nums[i], i);
+  }
+  return [];
+}
+
+// Group Anagrams: ['eat','tea','tan','ate','nat','bat'] → [['eat','tea','ate'],['tan','nat'],['bat']]
+function groupAnagrams(strs: string[]): string[][] {
+  const map = new Map&lt;string, string[]&gt;();
+  for (const s of strs) {
+    const key = [...s].sort().join(''); // sorted chars = anagram signature
+    map.set(key, [...(map.get(key) || []), s]);
+  }
+  return [...map.values()];
+}
+
+// Top K frequent elements: [1,1,1,2,2,3], k=2 → [1,2]
+function topKFrequent(nums: number[], k: number): number[] {
+  // Count frequencies
+  const freq = new Map&lt;number, number&gt;();
+  for (const n of nums) freq.set(n, (freq.get(n) || 0) + 1);
+
+  // Bucket sort by frequency (O(n) instead of O(n log n) sort)
+  const buckets: number[][] = Array.from({ length: nums.length + 1 }, () =&gt; []);
+  for (const [num, count] of freq) buckets[count].push(num);
+
+  // Collect from highest frequency bucket
+  const result: number[] = [];
+  for (let i = buckets.length - 1; i &gt;= 0 &amp;&amp; result.length &lt; k; i--) {
+    result.push(...buckets[i]);
+  }
+  return result.slice(0, k);
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c60">
+      <summary><span class="chk" onclick="td(event,'c60')"></span><span class="badge H">HIGH</span><span class="qa-q">Sliding Window — longest/shortest subarray with constraint</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p><strong>Pattern:</strong> "contiguous subarray/substring with property" → expand right, shrink from left when constraint violated. O(n) instead of O(n²).</p>
+        <pre class="cb">// Longest substring without repeating characters
+// "abcabcbb" → 3 ("abc")
+function longestSubstring(s: string): number {
+  const seen = new Map&lt;string, number&gt;(); // char → last seen index
+  let max = 0, left = 0;
+
+  for (let right = 0; right &lt; s.length; right++) {
+    const char = s[right];
+    // If char is in current window, shrink from left
+    if (seen.has(char) &amp;&amp; seen.get(char)! &gt;= left) {
+      left = seen.get(char)! + 1;
+    }
+    seen.set(char, right);
+    max = Math.max(max, right - left + 1);
+  }
+  return max;
+}
+
+// Minimum window substring: find smallest window in s containing all chars of t
+function minWindow(s: string, t: string): string {
+  const need = new Map&lt;string, number&gt;();
+  for (const c of t) need.set(c, (need.get(c) || 0) + 1);
+
+  let have = 0, required = need.size;
+  let left = 0, minLen = Infinity, minLeft = 0;
+  const window = new Map&lt;string, number&gt;();
+
+  for (let right = 0; right &lt; s.length; right++) {
+    const c = s[right];
+    window.set(c, (window.get(c) || 0) + 1);
+    if (need.has(c) &amp;&amp; window.get(c) === need.get(c)) have++;
+
+    while (have === required) { // window contains all chars
+      if (right - left + 1 &lt; minLen) { minLen = right - left + 1; minLeft = left; }
+      const lc = s[left++];
+      window.set(lc, window.get(lc)! - 1);
+      if (need.has(lc) &amp;&amp; window.get(lc)! &lt; need.get(lc)!) have--;
+    }
+  }
+  return minLen === Infinity ? '' : s.slice(minLeft, minLeft + minLen);
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c61">
+      <summary><span class="chk" onclick="td(event,'c61')"></span><span class="badge H">HIGH</span><span class="qa-q">BFS and DFS — trees and graphs with real patterns</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// BFS: level-by-level traversal using queue
+// Use for: shortest path, level order, minimum steps
+function levelOrder(root: TreeNode | null): number[][] {
+  if (!root) return [];
+  const result: number[][] = [];
+  const queue = [root];
+
+  while (queue.length) {
+    const size = queue.length; // snapshot size before adding children!
+    const level: number[] = [];
+
+    for (let i = 0; i &lt; size; i++) {
+      const node = queue.shift()!;
+      level.push(node.val);
+      if (node.left)  queue.push(node.left);
+      if (node.right) queue.push(node.right);
+    }
+    result.push(level);
+  }
+  return result;
+}
+
+// BFS on graph: shortest path between two nodes
+function shortestPath(graph: Map&lt;number, number[]&gt;, start: number, end: number): number {
+  if (start === end) return 0;
+  const visited = new Set([start]);
+  const queue: [number, number][] = [[start, 0]]; // [node, distance]
+
+  while (queue.length) {
+    const [node, dist] = queue.shift()!;
+    for (const neighbor of (graph.get(node) || [])) {
+      if (neighbor === end) return dist + 1;
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push([neighbor, dist + 1]);
+      }
+    }
+  }
+  return -1; // unreachable
+}
+
+// DFS: recursive (use for path problems, backtracking, tree depth)
+function maxDepth(root: TreeNode | null): number {
+  if (!root) return 0;
+  return 1 + Math.max(maxDepth(root.left), maxDepth(root.right));
+}
+
+// DFS iterative (avoids stack overflow on very deep trees)
+function inorderIterative(root: TreeNode | null): number[] {
+  const result: number[] = [], stack: TreeNode[] = [];
+  let curr: TreeNode | null = root;
+
+  while (curr || stack.length) {
+    while (curr) { stack.push(curr); curr = curr.left; }
+    curr = stack.pop()!;
+    result.push(curr.val);
+    curr = curr.right;
+  }
+  return result;
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c62">
+      <summary><span class="chk" onclick="td(event,'c62')"></span><span class="badge H">HIGH</span><span class="qa-q">Binary Search — classic and "search on condition" pattern</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Classic binary search: O(log n)
+function search(nums: number[], target: number): number {
+  let left = 0, right = nums.length - 1;
+
+  while (left &lt;= right) {
+    const mid = left + Math.floor((right - left) / 2); // avoids integer overflow
+    if (nums[mid] === target) return mid;
+    if (nums[mid] &lt; target)  left  = mid + 1;
+    else                      right = mid - 1;
+  }
+  return -1;
+}
+
+// TEMPLATE: "find first position where condition is true"
+// Works when search space looks like [F, F, F, T, T, T]
+function firstTrue(arr: number[], condition: (x: number) =&gt; boolean): number {
+  let left = 0, right = arr.length - 1, result = -1;
+  while (left &lt;= right) {
+    const mid = left + Math.floor((right - left) / 2);
+    if (condition(arr[mid])) {
+      result = mid;       // found a valid position, but search left for smaller
+      right = mid - 1;
+    } else {
+      left = mid + 1;     // condition false, search right
+    }
+  }
+  return result;
+}
+
+// Real example: minimum ship capacity to deliver all packages within D days
+// packages = [1,2,3,4,5,6,7,8,9,10], days = 5 → 15
+function minCapacity(weights: number[], days: number): number {
+  const canShip = (cap: number) =&gt; {
+    let daysNeeded = 1, current = 0;
+    for (const w of weights) {
+      if (current + w &gt; cap) { daysNeeded++; current = 0; }
+      current += w;
+    }
+    return daysNeeded &lt;= days;
+  };
+
+  let left = Math.max(...weights);      // min: must fit heaviest package
+  let right = weights.reduce((a,b) =&gt; a+b, 0); // max: ship everything in 1 day
+
+  while (left &lt; right) {
+    const mid = left + Math.floor((right - left) / 2);
+    if (canShip(mid)) right = mid;  // valid, try smaller
+    else              left  = mid + 1; // invalid, need more capacity
+  }
+  return left;
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c63">
+      <summary><span class="chk" onclick="td(event,'c63')"></span><span class="badge H">HIGH</span><span class="qa-q">Dynamic Programming — Coin Change and the DP thought process</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <p><strong>DP thought process:</strong> 1) What's the subproblem? 2) What's the recurrence? 3) Base case? 4) Bottom-up or top-down?</p>
+        <pre class="cb">// Coin Change: min coins to make amount
+// coins = [1,5,10,25], amount = 41 → 3 (25+10+5+1? No: 25+10+5+1=41, 4 coins. 25+16? 25+10+6? No. 25+10+5+1=4)
+// Actually: 25+10+5+1=41 uses 4 coins. 10+10+10+10+1=41 uses 5. Best is 25+10+5+1=4.
+function coinChange(coins: number[], amount: number): number {
+  // dp[i] = min coins to make amount i
+  const dp = new Array(amount + 1).fill(Infinity);
+  dp[0] = 0; // base case: 0 coins for amount 0
+
+  for (let i = 1; i &lt;= amount; i++) {
+    for (const coin of coins) {
+      if (coin &lt;= i) {
+        dp[i] = Math.min(dp[i], dp[i - coin] + 1);
+      }
+    }
+  }
+  return dp[amount] === Infinity ? -1 : dp[amount];
+}
+// Time: O(amount × coins.length)  Space: O(amount)
+
+// House Robber: can't rob adjacent houses, max money
+// dp[i] = max money from houses 0..i
+function rob(nums: number[]): number {
+  if (nums.length === 0) return 0;
+  if (nums.length === 1) return nums[0];
+
+  let prev2 = nums[0];
+  let prev1 = Math.max(nums[0], nums[1]);
+
+  for (let i = 2; i &lt; nums.length; i++) {
+    const curr = Math.max(prev1, prev2 + nums[i]);
+    prev2 = prev1;
+    prev1 = curr;
+  }
+  return prev1;
+}
+
+// Longest Common Subsequence: 2D DP
+function lcs(s1: string, s2: string): number {
+  const dp = Array.from({ length: s1.length + 1 }, () =&gt; new Array(s2.length + 1).fill(0));
+
+  for (let i = 1; i &lt;= s1.length; i++) {
+    for (let j = 1; j &lt;= s2.length; j++) {
+      if (s1[i-1] === s2[j-1]) dp[i][j] = dp[i-1][j-1] + 1; // chars match
+      else dp[i][j] = Math.max(dp[i-1][j], dp[i][j-1]);       // take best without one char
+    }
+  }
+  return dp[s1.length][s2.length];
+}
+
+// Two Pointer (bonus): sorted array problems
+// 3Sum: find all triplets summing to 0
+function threeSum(nums: number[]): number[][] {
+  nums.sort((a, b) =&gt; a - b);
+  const result: number[][] = [];
+
+  for (let i = 0; i &lt; nums.length - 2; i++) {
+    if (i &gt; 0 &amp;&amp; nums[i] === nums[i-1]) continue; // skip duplicates
+    let left = i + 1, right = nums.length - 1;
+
+    while (left &lt; right) {
+      const sum = nums[i] + nums[left] + nums[right];
+      if (sum === 0) {
+        result.push([nums[i], nums[left], nums[right]]);
+        while (left &lt; right &amp;&amp; nums[left] === nums[left+1]) left++;  // skip dups
+        while (left &lt; right &amp;&amp; nums[right] === nums[right-1]) right--; // skip dups
+        left++; right--;
+      } else if (sum &lt; 0) left++;
+      else right--;
+    }
+  }
+  return result;
+}</pre>
+      </div>
+    </details>
+
+    <details class="qa-card" id="c64">
+      <summary><span class="chk" onclick="td(event,'c64')"></span><span class="badge M">MED</span><span class="qa-q">Stack — Valid Parentheses, Monotonic Stack, Next Greater Element</span><span class="chev">›</span></summary>
+      <div class="qa-body">
+        <pre class="cb">// Valid Parentheses: (), [], {} must be properly nested
+function isValid(s: string): boolean {
+  const stack: string[] = [];
+  const pairs: Record&lt;string, string&gt; = { ')':'(', ']':'[', '}':'{' };
+
+  for (const char of s) {
+    if ('([{'.includes(char)) {
+      stack.push(char);
+    } else {
+      if (stack.pop() !== pairs[char]) return false;
+    }
+  }
+  return stack.length === 0;
+}
+
+// Monotonic Stack: Next Greater Element
+// [2,1,2,4,3] → [4,2,4,-1,-1]
+function nextGreater(nums: number[]): number[] {
+  const result = new Array(nums.length).fill(-1);
+  const stack: number[] = []; // stores indices
+
+  for (let i = 0; i &lt; nums.length; i++) {
+    // While current element is greater than what's on stack, resolve those elements
+    while (stack.length &amp;&amp; nums[i] &gt; nums[stack[stack.length - 1]]) {
+      result[stack.pop()!] = nums[i];
+    }
+    stack.push(i);
+  }
+  return result;
+}
+
+// Largest Rectangle in Histogram
+function largestRectangle(heights: number[]): number {
+  const stack: number[] = []; // monotonic increasing stack of indices
+  let maxArea = 0;
+
+  for (let i = 0; i &lt;= heights.length; i++) {
+    const h = i === heights.length ? 0 : heights[i];
+    while (stack.length &amp;&amp; h &lt; heights[stack[stack.length - 1]]) {
+      const height = heights[stack.pop()!];
+      const width = stack.length ? i - stack[stack.length - 1] - 1 : i;
+      maxArea = Math.max(maxArea, height * width);
+    }
+    stack.push(i);
+  }
+  return maxArea;
+}</pre>
+      </div>
+    </details>
+
+  </div>
+</section>
+
+</main>
+
+<script>
+// Progress tracking
+const done = new Set(JSON.parse(localStorage.getItem('prep-v2') || '[]'));
+
+function td(e, id) {
+  e.stopPropagation();
+  e.preventDefault();
+  const chk = document.querySelector(`#${id} summary .chk`);
+  const card = document.getElementById(id);
+  if (done.has(id)) {
+    done.delete(id); chk.classList.remove('on'); chk.textContent = '';
+    card.classList.remove('done');
+  } else {
+    done.add(id); chk.classList.add('on'); chk.textContent = '✓';
+    card.classList.add('done');
+  }
+  localStorage.setItem('prep-v2', JSON.stringify([...done]));
+  updateProgress();
+}
+
+function updateProgress() {
+  const cards = document.querySelectorAll('details.qa-card');
+  const total = cards.length;
+  const d = done.size;
+  document.getElementById('pb').style.width = (d/total*100) + '%';
+  document.getElementById('pbl').textContent = d + ' / ' + total + ' done';
+  // update nav counts per section
+  document.querySelectorAll('.section').forEach(sec => {
+    const secCards = sec.querySelectorAll('details.qa-card');
+    const secDone = [...secCards].filter(c => done.has(c.id)).length;
+    const ct = document.getElementById('nc-' + sec.id);
+    if (ct) ct.textContent = secDone + '/' + secCards.length;
+  });
+}
+
+// Restore done state
+done.forEach(id => {
+  const card = document.getElementById(id);
+  if (!card) return;
+  const chk = card.querySelector('summary .chk');
+  if (chk) { chk.classList.add('on'); chk.textContent = '✓'; }
+  card.classList.add('done');
+});
+
+// Search
+document.getElementById('si').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('details.qa-card').forEach(card => {
+    const text = card.querySelector('.qa-q')?.textContent?.toLowerCase() || '';
+    card.style.display = (!q || text.includes(q)) ? '' : 'none';
+  });
+});
+
+// Sidebar active highlight on scroll
+window.addEventListener('scroll', () => {
+  let active = '';
+  document.querySelectorAll('.section').forEach(sec => {
+    if (sec.getBoundingClientRect().top &lt;= 80) active = sec.id;
+  });
+  document.querySelectorAll('.nav-a').forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + active);
+  });
+}, { passive: true });
+
+function go(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelector('.sidebar')?.classList.remove('open');
+}
+
+updateProgress();
+
+// Capture-phase intercept: prevent <details> toggle when clicking the checkbox
+// (browser fires summary's toggle before inline onclick reaches .chk)
+document.querySelectorAll('details.qa-card summary').forEach(function(s) {
+  s.addEventListener('click', function(e) {
+    if (e.target.closest('.chk')) e.preventDefault();
+  }, true); // true = capture phase — runs before browser's built-in toggle
+});
+</script>
+</body>
+</html>

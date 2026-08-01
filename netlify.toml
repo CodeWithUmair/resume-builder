@@ -1,0 +1,19 @@
+# Netlify configuration.
+# Goal: publish ONLY interview-questions.html as the site — nothing else in this
+# repo is exposed or served.
+#
+# The build copies that single file into a clean "dist" folder, renaming it to
+# index.html so it loads at the site root (https://<your-site>.netlify.app/).
+# Netlify serves only the `publish` folder, so the mentor code, lib/, build
+# scripts, etc. are never part of the deployed site.
+
+[build]
+  command = "rm -rf dist && mkdir -p dist && cp interview-questions.html dist/index.html"
+  publish = "dist"
+
+[build.environment]
+  # This is a plain static HTML file — no Node build needed, so skip installing
+  # the repo's npm dependencies. (Netlify runs `npm install $NPM_FLAGS`; the
+  # "--version" flag turns that into a no-op.) If a deploy ever fails on install,
+  # simply delete this line and Netlify will install deps normally.
+  NPM_FLAGS = "--version"

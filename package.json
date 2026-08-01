@@ -9,12 +9,22 @@
     "sync":    "node sync.js",
     "sync:remote":   "node sync.js --folder Remote",
     "sync:pakistan": "node sync.js --folder Pakistan",
-    "build":   "node build-resume.js"
+    "build":   "node build-resume.js",
+    "mentor":  "tsx mentor/cli.ts",
+    "mentor:check": "tsx mentor/smoke.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.54.0",
+    "@langchain/anthropic": "^0.3.0",
+    "@langchain/core": "^0.3.0",
+    "@langchain/langgraph": "^0.2.0",
     "docx": "^9.5.1",
     "dotenv": "^16.4.0",
     "googleapis": "^144.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
   }
 }
