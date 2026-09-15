@@ -21,7 +21,7 @@ Karachi, switching jobs toward a **Senior Full-Stack AI Engineer** role):
    terminal AI mentor, to prepare for senior-level interviews (backend/AI-heavy,
    full-stack, DSA, system design).
 
-## Current state (as of 2026-08-01)
+## Current state (as of 2026-09-04)
 
 - Resume builder: working locally (`npm run sync`, `npm run build`). No changes made
   to it recently.
@@ -52,6 +52,68 @@ Karachi, switching jobs toward a **Senior Full-Stack AI Engineer** role):
   `github.com/CodeWithUmair/resume-builder` (public). Umair was walked through
   connecting it on Netlify's UI (Import from GitHub → auto-detects `netlify.toml`) —
   **confirm in the next session whether the site actually deployed** and get the URL.
+
+## Job applications (added 2026-09-04)
+
+This repo is now also where job applications get written, not just the resume pipeline.
+
+### Umair's real background — READ THIS BEFORE WRITING ANY RESUME
+
+The old automation profile was wrong in ways that shipped on real resumes. Corrected facts:
+
+- **Decrypted Labs is Jun 2024 - Present.** Not 2021. The old routine hardcoded 2021 and
+  it went out on every generated resume.
+- **Current work is healthcare, not cruise booking.** Two client CRMs, both live:
+  - `D:\work\chiro` — **Chiro360**, chiropractic auto-accident billing CRM.
+    Next.js 16.2.4 + React 19.2.4 + NestJS + Prisma + Postgres. Patients, appointments,
+    visits, CPT/ICD coding, insurance claims, attorney LOP, visit-based billing ledger,
+    ~31 screens. Server-side permission guards per controller, server-only session layer
+    (`frontend/src/lib/dal.ts`), AuditTrail model, 76 Playwright E2E tests passing.
+    Umair designed the CPT/visit billing model the rest of the system depends on.
+    Each repo has its own HANDOFF.md — read those, they are detailed.
+  - `D:\work\DME` — durable medical equipment billing CRM. NestJS + Next.js.
+    CMS-1500 generation, AWS Textract OCR, S3, OTP email auth, billing ledger.
+    One codebase deployed as two white-label instances for two clients on isolated
+    Supabase DBs. EC2 + pm2 + GitHub Actions. Umair handles the deploys and migrations.
+- **Cruise booking platform: he inherited it, did not build it.** A senior colleague
+  built ~half, then left the company. Umair got one handover session, read the codebase,
+  finished and shipped it. He built the referral/promo engine and scheduled payouts.
+  It is **React + Node + MongoDB, NOT Next.js**. Do not write "built from scratch".
+  This is a strength, not a weakness — many postings ask for exactly this experience.
+- **Do not use the word "owned"** for client projects. Umair dislikes it, it reads as
+  business ownership. Use "responsible for" / "my responsibility".
+- **LightNX Defence Platform and the multi-tenant RAG platform are real and live.**
+  Confirmed 2026-09-03. LightNX = defence client, real-time asset tracking, RBAC over
+  sensitive data. Use LightNX for any role mentioning security, RBAC, or regulated data.
+- **Next.js experience: just over 3 years** (started around Next 13, ~1 year of React
+  before that). Now on Next 16 / React 19 daily via Chiro360.
+- Confirmed by Umair 2026-09-03: he has reviewed others’ PRs and blocked a merge; he has
+  read MongoDB execution plans and fixed indexes; he has found and fixed a real security
+  issue (auth checked in UI only, API route left open).
+
+### Writing rules Umair has asked for
+
+- **No em dashes or en dashes anywhere.** Hyphens inside compound words are fine.
+- No generic AI phrasing, no sugar-coating, no corporate speak.
+- Plain professional English. He is not a native speaker, so for anything he has to
+  *say out loud* (video scripts, calls) use short sentences and simple words. Keep the
+  technical terms, simplify the English around them.
+- Never fabricate specifics of his real experiences. Ask him. He confirms readily.
+
+### Psychable application (in progress)
+
+Senior Full Stack Developer, Next.js/MongoDB, part-time 10-20 hrs/wk, $2-3k/month,
+US remote, direct contract. Applied via Indeed. Drive folder:
+"Job Applications/Remote/2026-09-03 - Psychable - Senior Full Stack Developer".
+
+- It is a **code-review-first role**. "We need a developer who is as good at reviewing
+  code as writing it." The review gate is the first thing you would own.
+- **The 8 application questions ARE the application.** "Applications without the answers
+  to our questions will not be reviewed." Each answer field is capped at **1500 chars**.
+- Status: **Q1-Q7 written and verified under the limit. Q8 (video) not yet recorded.**
+  Answers and the video script are in `psychable-application-answers.md` and the
+  session transcript. Documents in `output/Remote/`.
+- Umair still needs to: record the video, upload unlisted, test the link logged out.
 
 ## Architecture / key files
 
@@ -85,9 +147,34 @@ mentor/
   git-ignored and confirmed NOT tracked (repo is public on GitHub — verify this stays
   true before any future commit that touches these areas).
 - `ANTHROPIC_API_KEY` in `.env` is required for both the resume builder and the mentor.
+- **`.auth-token.json` is DEAD.** Expired 2026-06-08, `invalid_grant`. Its scope is
+  `drive.readonly` so it could not write anyway. It also carries
+  `refresh_token_expires_in`, which Google only sets when the OAuth consent screen is
+  in **Testing** mode — refresh tokens die after 7 days there. `npm run sync` will keep
+  failing until Umair re-auths AND publishes the consent screen. `auth-setup.js` is an
+  interactive browser flow, so only Umair can run it.
+- **To write to Drive, use the MCP connector, not the OAuth token.** It has separate,
+  working auth. Use `create_file` with `textContent` + `contentMimeType: "text/html"`
+  and let Drive convert it to a Google Doc. **Base64 .docx upload fails** with "invalid
+  argument". `update_file` only changes metadata (title/parent), so to change content
+  you must trash the old doc and create a new one.
+- **Unrelated live security issue, flagged to Umair 2026-09-04:**
+  `D:\work\chiro\HANDOFF.md` contains a real production password in plain text and is
+  committed to git. That repo has a `client` remote pointing at a GitHub account Umair
+  does not control. Needs rotating and scrubbing from history. Not done yet.
 
 ## Known open threads / next steps
 
+- **Psychable: record the video (Q8) and submit.** Everything else is written.
+- **Rotate the chiro production password** and scrub it from git history (see Secrets).
+- **Re-auth Google Drive** (`node auth-setup.js`) and publish the OAuth consent screen
+  so it stops expiring weekly. Only needed for `npm run sync`; Drive writes work via MCP.
+- `job-automation-routine.md` is the corrected v2 of Umair’s job-search prompt. It lives
+  in this repo but he runs it elsewhere, so **paste it over the old one wherever it runs**.
+  Unclear whether he has done that yet.
+- Old applications in `job-applications-archive.json` have **no full job descriptions**,
+  only summaries. That data is unrecoverable (the shortlinks are dead). Only new runs of
+  the v2 routine will capture full JDs.
 - Confirm Netlify deploy succeeded and get the live URL; smoke-test the Search button
   from the deployed site (not just locally).
 - `mentor/` has never been used interactively by Umair for real prep yet — only
@@ -103,3 +190,37 @@ mentor/
 ### 2026-08-01 — HANDOFF.md created
 Created this file to give future sessions full context without re-deriving it.
 No code changes this session beyond adding HANDOFF.md itself.
+
+### 2026-09-04 — Psychable application, automation routine rewrite
+
+Applied to Psychable (Senior Full Stack Developer). Built a tailored resume and cover
+letter, then rewrote both twice as facts got corrected.
+
+**What happened, in order:**
+
+1. Built resume/cover letter from the Drive folder the automation had generated. That
+   generated resume dated Decrypted Labs to 2021 (real: Jun 2024) and contained a leaked
+   internal note inside a resume bullet: *"same domain as the Psychable marketplace Umair
+   would own"*. Rebuilt from his real CV instead.
+2. Umair supplied the **actual Indeed job description**, which his automation had reduced
+   to ~10 summary lines. The real posting was a code-review-first role requiring 8 written
+   answers and a video. None of that survived into the stored Job Info doc.
+3. Diagnosed the automation and wrote `job-automation-routine.md` (v2). Root causes:
+   Job Info stored only derived summaries and never the raw JD; the profile block was
+   stale and wrong; and the project-bullet template literally instructed the model to
+   write `[why it matters for this specific remote role]` as a bullet, which is what leaked.
+4. Umair corrected several facts: LightNX and the RAG platform are real; the cruise
+   platform was inherited not built, and is React not Next.js; "owned" is the wrong word.
+5. **Umair then pointed at `D:\work\chiro` and `D:\work\DME`** as his actual current
+   work. Read both. Chiro360 runs Next.js 16.2.4 / React 19.2.4, which is Psychable’s exact
+   stack, in healthcare, with server-side authorization and 76 Playwright tests. Rewrote
+   the resume, cover letter and video script around these instead of cruise booking. This
+   was the single biggest improvement to the application.
+6. Wrote all 8 answers to the 1500-char field limit and verified each count.
+
+**Files added:** `job-automation-routine.md`, `psychable-application-answers.md`,
+`output/Remote/Umair-Resume-Psychable.docx`, `output/Remote/Umair-CoverLetter-Psychable.docx`.
+
+**Open question for next session:** the resume lists Chiro360 and DME under Decrypted Labs
+(Jun 2024 - Present). Umair has not confirmed whether those are Decrypted Labs work,
+freelance, or through another company. Verify before he submits anywhere else.
