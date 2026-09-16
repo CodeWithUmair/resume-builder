@@ -1,12 +1,13 @@
-# Job Application Automation Routine (v4) — Job Info Only
+# Job Application Automation Routine (v5) — Job Info Only
 
-Corrected 2026-09-16. Replaces v3.
+Corrected 2026-09-17. Replaces v4.
 
 **What changed and why:** v3 dropped resume/cover-letter generation to focus this
-routine on capturing verified Job Info only (see the v2→v3 entry below). v4 adds the
-Dice and ZipRecruiter connectors, which are now connected alongside Indeed, so Step 1
-can pull structured listings via `search_jobs` instead of relying only on fetching job
-board pages.
+routine on capturing verified Job Info only (see the v2→v3 entry below). v4 added the
+Dice and ZipRecruiter connectors alongside Indeed. v5 explicitly rules out the two
+Apify-based tools (Job Board Aggregator, Rozee.pk Jobs) that got attached after v4 —
+they cost real money past a $5/month free tier and delivered nothing usable in two
+days of real runs. See the changelog and the note under Step 1.
 
 ---
 
@@ -136,9 +137,23 @@ than fetching a job board's page and hoping the content comes through intact:
 - ZipRecruiter connector: `search_jobs`. Skews US-based, so apply the LOCATION RULES
   strictly — a lot of its "remote" listings are US-only in practice, not just in name.
 
+**Do not use Apify-based tools** (a "Job Board Aggregator" covering LinkedIn/Glassdoor/
+ZipRecruiter, or a "Rozee.pk Jobs" scraper) even if one is attached to this routine's
+tools. Tried 2026-09-16/17 and dropped: they hit Apify's $5/month free usage cap in a
+single day of use, LinkedIn access is blocked at the network level in this environment
+so the aggregator returned empty description fields anyway (nothing usable, and Step 2
+below requires a real verbatim JD), and the Rozee.pk scraper didn't surface any fresh
+qualifying matches either. If Umair reconnects a paid Apify plan later this note should
+be revisited, but until then treat these as unavailable even when they show up in the
+tool list.
+
 **Then supplement with site search** for boards without a connector: weworkremotely.com,
 remoteok.com, arc.dev/remote-jobs, himalayas.app, linkedin.com/jobs, remote.co,
-jobs.ashbyhq.com, wellfound.com
+jobs.ashbyhq.com, wellfound.com. Confirmed again on 2026-09-17: this fallback is
+frequently `EGRESS_BLOCKED` outright in this environment (every domain tested failed,
+not just job boards), so a run that finds nothing beyond the three connectors is not
+necessarily a bug — check the run's own notes for whether site search was reachable
+before assuming something's wrong.
 
 Search terms (use for both connector queries and site search):
 - "Full Stack Developer Remote 2026"
@@ -246,6 +261,20 @@ folder and what it needs.]
 ---
 
 ## Changelog
+
+### v4 to v5
+1. **Ruled out Apify-based tools explicitly** (Job Board Aggregator, Rozee.pk Jobs).
+   They were added after v4 shipped, outside this file's own history — connected
+   directly on claude.ai without an instructions update. Two real runs on 2026-09-16
+   and 09-17 showed why they're not worth it: LinkedIn is network-blocked in this
+   environment so the aggregator returned empty description fields (unusable per the
+   Step 2 full-JD rule), Rozee.pk surfaced nothing fresh either run, and both actors
+   burned through Apify's $5/month free tier in a single day. Costing real money for
+   zero usable output is a clear drop, not a close call.
+2. **Confirmed the site-search fallback is frequently fully egress-blocked**, not
+   just unreliable — a 2026-09-17 run got `EGRESS_BLOCKED` on every domain tested,
+   including a plain `example.com`. Noted under Step 1 so a zero-result run isn't
+   mistaken for a bug when it's actually this.
 
 ### v3 to v4
 1. **Step 1 now searches the Dice and ZipRecruiter connectors directly**, via their

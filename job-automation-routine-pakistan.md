@@ -1,11 +1,14 @@
-# Job Application Automation Routine — Pakistan (v3) — Job Info Only
+# Job Application Automation Routine — Pakistan (v4) — Job Info Only
 
-Corrected 2026-09-15. Replaces v1.
+Corrected 2026-09-17. Replaces v3.
 
 **What changed and why:** v1 read a base resume from Google Drive and generated a
 tailored Resume and Cover Letter Doc for every job. That's now done separately, per
 application, in the resume-builder repo — this routine's only job is to find postings
-and save a detailed, verified Job Info file to Drive.
+and save a detailed, verified Job Info file to Drive. v4 brings Step 1 in line with
+the Remote routine's v5 (search the Indeed connector directly, rule out Apify-based
+tools explicitly) — it had drifted behind since only the Remote file got that update
+when Dice/ZipRecruiter were added.
 
 ---
 
@@ -54,10 +57,30 @@ Any job matching this list later — skip entirely. No files created.
 
 ## STEP 1 - FIND 20 JOBS
 
-Search for job postings from the last 48 hours.
-Sites: rozee.pk, mustakbil.com, linkedin.com/jobs, glassdoor.com, indeed.com, bayt.com
+Postings from the last 48 hours.
 
-Search terms:
+**Search the Indeed connector first** — it's connected and exposes a `search_jobs`
+tool that returns structured listings directly: `search_jobs`, then `get_job_details`
+on anything that looks like a match, `get_company_data` if the company is unfamiliar
+and legitimacy needs a second look.
+
+**Do not use Apify-based tools** (a "Job Board Aggregator" covering LinkedIn/Glassdoor/
+ZipRecruiter, or a "Rozee.pk Jobs" scraper) even if one is attached to this routine's
+tools. Tried 2026-09-16/17 and dropped: they hit Apify's $5/month free usage cap in a
+single day of use, LinkedIn access is blocked at the network level in this environment
+so the aggregator returned empty description fields anyway (nothing usable, and Step 2
+below requires a real verbatim JD), and the Rozee.pk scraper didn't surface any fresh
+qualifying matches either time it ran. If Umair reconnects a paid Apify plan later this
+note should be revisited, but until then treat these as unavailable even when they
+show up in the tool list.
+
+**Then supplement with site search** for boards without a connector: rozee.pk,
+mustakbil.com, linkedin.com/jobs, glassdoor.com, bayt.com. This fallback is frequently
+`EGRESS_BLOCKED` outright in this environment (confirmed 2026-09-17 on the Remote
+routine — every domain tested failed, not just job boards), so a run that finds
+nothing beyond the Indeed connector is not necessarily a bug.
+
+Search terms (use for both the connector and site search):
 - "Full Stack Developer Pakistan 2026"
 - "React Next.js Developer Pakistan"
 - "Node.js Full Stack Engineer Karachi"
@@ -147,7 +170,21 @@ APPLICATIONS NEEDING EXTRA WORK BEFORE SUBMITTING:
 
 ---
 
-## Changelog (v1 to v2)
+## Changelog
+
+### v3 to v4
+1. **Step 1 rewritten to search the Indeed connector directly first**, matching the
+   Remote routine's v5 — this file had drifted behind since only Remote got updated
+   when connector search was first added.
+2. **Ruled out Apify-based tools explicitly** (Job Board Aggregator, Rozee.pk Jobs).
+   Two real runs on 2026-09-16/17 showed why: LinkedIn is network-blocked in this
+   environment so the aggregator returned empty description fields, Rozee.pk surfaced
+   nothing fresh either run, and both actors burned through Apify's $5/month free
+   tier in a single day.
+3. **Noted the site-search fallback is frequently fully egress-blocked**, confirmed
+   on the Remote routine's 2026-09-17 run.
+
+### v1 to v2
 
 1. **Removed resume and cover letter generation entirely.** That work now happens in
    the resume-builder repo, per application, using the Job Info file as input.

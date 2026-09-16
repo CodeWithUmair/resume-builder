@@ -1,5 +1,19 @@
 # HANDOFF — resume-builder repo
 
+> ## RULE, added 2026-09-17: no Apify-based tools in either routine, even if attached.
+> A "Job Board Aggregator" (LinkedIn/Glassdoor/ZipRecruiter) and a "Rozee.pk Jobs"
+> scraper got connected directly on claude.ai after the v4 remote routine shipped,
+> without a corresponding instructions update. Two real runs (2026-09-16, 2026-09-17)
+> showed they're not worth it: LinkedIn is network-blocked in that environment so the
+> aggregator returned empty description fields (unusable — Step 2 requires a real
+> verbatim JD), Rozee.pk surfaced nothing fresh either run, and both actors burned
+> through Apify's $5/month free tier in a single day. Both routine `.md` files now
+> explicitly rule these out in Step 1 (v5 remote, v4 Pakistan). **Still needed on
+> claude.ai itself (Umair's action):** remove "Job Board Aggregator" and "Rozee.pk
+> Jobs" from each routine's "Runs with" tool list, and consider disconnecting the
+> Apify custom connector from Settings → Connectors entirely if nothing else uses it,
+> so a future run can't accidentally rack up Apify usage again.
+
 > ## RULE, added 2026-09-16: never create Resume or Cover Letter files in Google Drive.
 > Google Drive only ever holds **Job Info** files (via the cloud routine). When
 > generating a Resume/Cover Letter for a specific application — always a manual,
@@ -471,3 +485,42 @@ top of this file — this must not happen again for any future job.
 Decrypted Labs work or a separate arrangement before any more resumes go out naming
 that employer. Fill in the real billing-ledger schema decision in
 `interview-storytelling-guide.md`'s Nemonx section before that interview happens.
+
+### 2026-09-17 — Softvira application, Apify actors dropped
+
+Built Softvira's full local package (`output/Pakistan/Softvira - Full Stack
+JavaScript Developer AI Agenting Experience/`) — resume, cover letter, and a fresh
+per-job `interview-storytelling-guide.md` leading with the AI SDR Agent and RAG
+platform, matching Softvira's explicit "builder who codes agents, not someone who
+uses ready-made tools" bar almost word for word. No staged interview process exists
+in their JD (just "email your CV to careers@softvira.com"), so the guide's ending
+covers what to put in that email instead of a Round 1 script.
+
+Also fixed a one-page overflow bug in `build-resume.js`: the Education line was
+spilling to page 2. Tightened margins and spacing across the template (font sizes
+untouched on purpose) rather than shrinking type.
+
+**Apify actors evaluated and dropped.** Umair had connected a Job Board Aggregator
+(LinkedIn/Glassdoor/ZipRecruiter) and a Rozee.pk scraper directly to both routines on
+claude.ai. Two real runs showed the problem: an Apify "Platform usage exceeded" email
+arrived after one day (the $5/month free tier was gone), the LinkedIn results in the
+Pakistan run's own transcript were blocked at the network level with empty
+description fields (unusable per the full-JD rule), and Rozee.pk didn't surface
+anything fresh in either run. Umair called it correctly — not worth it. Added an
+explicit "do not use these" note to Step 1 of both routine `.md` files (v5 remote, v4
+Pakistan) so they're ruled out even if the tools stay attached. Also confirmed from
+that same run's notes that the site-search fallback is frequently fully
+`EGRESS_BLOCKED` (every domain tested failed, not just job boards) — documented so a
+zero-result run isn't mistaken for something broken.
+
+**A side note worth remembering:** the Remote run that found 0 jobs wasn't a bug —
+it correctly hard-skipped ~45 candidates (US-only work auth, 7+ years required,
+mislabeled on-site/hybrid, wrong timezone) and skipped 9 real duplicates already in
+Drive. Zero is a legitimate outcome on a given day, not something to chase by
+loosening the filters.
+
+**Open for next session:** confirm Umair has removed the two Apify tools from both
+routines' "Runs with" lists on claude.ai (can't be done from here) and considered
+disconnecting the Apify connector entirely. Decide whether to actually apply to
+Softvira (it's email-based, so Umair has to send it himself) and whether to build
+Zeta Corp or another Pakistan job next.
