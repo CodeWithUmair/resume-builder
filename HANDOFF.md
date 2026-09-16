@@ -1,5 +1,28 @@
 # HANDOFF — resume-builder repo
 
+> ## BLOCKED, as of 2026-09-17: local repo is 1 commit ahead of origin, push failing.
+> Commit `9b0eda9` ("Drop Apify job-board tools from both routines") is committed
+> locally but **not pushed** — `git push origin main` fails every time with:
+> `remote: Permission to CodeWithUmair/resume-builder.git denied to
+> momalnaz796-create` (403). The repo's git config is correct (remote is
+> `CodeWithUmair/resume-builder.git`, last commit author is `CodeWithUmair
+> <codewithumair867@gmail.com>`) — this is a **Windows Credential Manager** problem,
+> not a repo problem: some cached credential is authenticating as the wrong GitHub
+> account (`momalnaz796-create`), not `CodeWithUmair`. Umair was walked through
+> Credential Manager → Windows Credentials → Generic Credentials and found four
+> relevant entries: `gh:github.com:` (blank username, modified "Today" — the
+> suspected bad one, likely created during the failed push attempts),
+> `gh:github.com:CodeWithUmair` (modified 9/8/2026, looks correct),
+> `git:https://github.com` (username CodeWithUmair, modified 8/23/2026, looks
+> correct), and an unrelated `virtualapp/didlogical` entry. He was told to remove
+> only the blank-username `gh:github.com:` entry and retry — **as of this session
+> ending, it's unconfirmed whether that fixed it**, since the session ended right
+> after giving that instruction. **Next session: check whether `9b0eda9` reached
+> origin (`git log origin/main --oneline -1`); if still behind, walk through the
+> Credential Manager fix again** (removing that entry should force a fresh browser
+> login as CodeWithUmair on the next push) rather than just retrying the push blindly
+> — retrying without changing the credential will keep failing identically.
+
 > ## RULE, added 2026-09-17: no Apify-based tools in either routine, even if attached.
 > A "Job Board Aggregator" (LinkedIn/Glassdoor/ZipRecruiter) and a "Rozee.pk Jobs"
 > scraper got connected directly on claude.ai after the v4 remote routine shipped,
