@@ -1,5 +1,16 @@
 # HANDOFF — resume-builder repo
 
+> ## RULE, added 2026-09-16: never create Resume or Cover Letter files in Google Drive.
+> Google Drive only ever holds **Job Info** files (via the cloud routine). When
+> generating a Resume/Cover Letter for a specific application — always a manual,
+> per-application request in a session, never automatic — write them **locally in
+> this repo**, under `output/<Remote|Pakistan>/<Company> - <Job Title>/resume.docx`
+> and `.../cover-letter.docx`, using `build-resume.js` / `build-cover-letter.js`
+> (`--data-file <json> --output <path>`, see either file's header for the expected
+> JSON shape). This was violated once on 2026-09-16 (Nemonx Resume/Cover Letter got
+> created as Drive Docs) and corrected immediately — the Drive docs were deleted and
+> redone as local `.docx` files. Do not repeat that mistake for any future job.
+
 > **Purpose of this file:** single source of truth for what this repo is, what's been
 > done, and what's next — so a new chat session can pick up with full context instead
 > of re-deriving it. **Update the "Session Log" section at the end of every work
@@ -100,7 +111,7 @@ The old automation profile was wrong in ways that shipped on real resumes. Corre
   technical terms, simplify the English around them.
 - Never fabricate specifics of his real experiences. Ask him. He confirms readily.
 
-### Psychable application (in progress)
+### Psychable application (submitted, awaiting reply as of 2026-09-16)
 
 Senior Full Stack Developer, Next.js/MongoDB, part-time 10-20 hrs/wk, $2-3k/month,
 US remote, direct contract. Applied via Indeed. Drive folder:
@@ -110,10 +121,83 @@ US remote, direct contract. Applied via Indeed. Drive folder:
   code as writing it." The review gate is the first thing you would own.
 - **The 8 application questions ARE the application.** "Applications without the answers
   to our questions will not be reviewed." Each answer field is capped at **1500 chars**.
-- Status: **Q1-Q7 written and verified under the limit. Q8 (video) not yet recorded.**
-  Answers and the video script are in `psychable-application-answers.md` and the
-  session transcript. Documents in `output/Remote/`.
-- Umair still needs to: record the video, upload unlisted, test the link logged out.
+- **Status update 2026-09-16: fully submitted.** Umair recorded and submitted the Q8
+  video roughly two weeks ago (around early September). All 8 answers plus the video
+  went in. **No reply from Psychable yet.** `psychable-application-answers.md` (the
+  written answers/video script) was deleted from this repo in an earlier session as
+  no-longer-needed once submitted — the Drive folder's "Application Answers" doc is
+  the remaining record. Treat this one as done-and-waiting, not as an open task; a
+  cold application with no reply after ~2 weeks is normal, don't chase it, but also
+  don't tell Umair anything implying it still needs work.
+
+### Job-search automation routine — reworked 2026-09-15/16, scope changed
+
+`job-automation-routine.md` (Remote) and the new `job-automation-routine-pakistan.md`
+(Pakistan) both changed shape: **they no longer generate a Resume or Cover Letter Doc.**
+Each now does one thing — find postings, verify/resolve the apply link, and save a single
+detailed "Job Info" file to the Drive folder for that job. Resume/cover letter generation
+for a specific application now happens separately, in this repo, using that Job Info file
+plus the real-background facts above as input. This replaces the old stale next-step ("v2,
+unclear if pasted over the old one") below — both files are pushed to origin
+(commit `e131838`), Remote is v4, Pakistan is v3.
+
+- **`job-automation-routine.md` has an uncommitted local edit right now**: Step 1 was
+  rewritten to search the Indeed/Dice/ZipRecruiter connectors' `search_jobs` tools directly
+  before falling back to site search. Review and commit next session if it looks right.
+- **Real run exposed a platform bug, not a config mistake.** Domains added under
+  Settings → Capabilities do not actually get through — every site-search fallback
+  (WeWorkRemotely, RemoteOK, Himalayas, Wellfound, Arc.dev, even ZipRecruiter's own site for
+  resolving links) still hit a network block on a real run. Only the Indeed/Dice/ZipRecruiter
+  *connector* tools worked, because those run server-side on the provider's own API rather
+  than through Claude's blocked browsing path. Practical ceiling right now is whatever those
+  three connectors surface — one real run returned 5 jobs, not the routine's target of 10.
+- Two gaps found, not yet fixed, want more data before deciding:
+  1. ZipRecruiter's connector has no `get_job_details` tool, so a strong ZipRecruiter match
+     with no capturable full JD gets silently dropped instead of saved. Considered a
+     "partial Job Info, JD NOT CAPTURED — check manually" fallback tier for a v5; held off,
+     want a few more runs to see if the drop rate justifies the extra complexity.
+  2. Dice returned mostly irrelevant .NET/Java/government-clearance roles in that one run —
+     may not be worth keeping, but one data point isn't enough to cut it yet.
+- The quality gate is working as intended: that run correctly flagged **MRoads** (no public
+  company profile) and **Softforms Inc** ($150-250k for a vague role, zero public profile)
+  rather than presenting them as clean matches. Don't relax this chasing volume.
+
+### More job-board MCP connectors — researched, not yet wired in
+
+Umair wants more daily volume since he's now applying aggressively. Status:
+
+- **Official claude.ai connectors** (Settings → Connectors → Discover): only Indeed, Dice,
+  ZipRecruiter confirmed as verified job-board connectors as of this session. Worth
+  re-checking Discover for LinkedIn/Glassdoor/Monster/Greenhouse/Lever/Ashby — the directory
+  grows fast and may have added some since.
+- **Two Apify-hosted MCP actors found, cost/trust caveats noted, not yet connected:**
+  - `jungle_synthesizer/rozee-pk-pakistan-job-listing-scraper` — Rozee.pk (Pakistan's
+    dominant board). $1.60/1,000 records scraped. 0.0 rating, 3 total users — unproven.
+  - `apricot_blackberry/job-board-aggregator` — LinkedIn + Glassdoor + ZipRecruiter in one
+    feed. **$50.00/1,000 job postings** — cost this out before running it daily. 0.0 rating,
+    104 total users — also unproven, and LinkedIn/Glassdoor scraping is inherently flaky
+    (both sites actively fight scrapers).
+  - Both reachable via Apify's hosted MCP gateway, scoped to just those tools:
+    - `https://mcp.apify.com/?tools=fetch-actor-details,jungle_synthesizer/rozee-pk-pakistan-job-listing-scraper`
+    - `https://mcp.apify.com/?tools=fetch-actor-details,apricot_blackberry/job-board-aggregator`
+- **Added locally in Claude Code only** (this repo, via
+  `claude mcp add apify "https://mcp.apify.com/" -t http`, unscoped — exposes all 69k+ Apify
+  tools). This does **not** reach the claude.ai cloud routine, which has its own separate
+  Connectors list. Needs Apify OAuth on first real tool call — not done yet (non-interactive
+  session can't complete that popup).
+- **Still needed on claude.ai itself (Umair's action, not doable from a coding session):**
+  Settings → Connectors → Add custom connector → paste the two scoped URLs above as two
+  separate connectors → complete the Apify OAuth popup for each → then open the routine's
+  own task/Project settings and confirm the new connectors are actually enabled there
+  (adding a connector globally doesn't always auto-enable it inside an existing scheduled
+  routine).
+- **Explicitly ruled out:** auto-apply/form-filling MCP tools that drive LinkedIn Easy Apply
+  / Greenhouse / Ashby / Workday via browser automation with real login credentials — ToS
+  and account-ban risk, a different risk class from an API-based connector. Not for an
+  unattended routine.
+- **Next step:** once Umair connects these and runs a real test, report what actually came
+  back (genuine current postings vs empty vs cost per call) so the working one(s) can be
+  folded into Step 1 of the relevant routine file, same pattern as Dice/ZipRecruiter.
 
 ## Architecture / key files
 
@@ -169,12 +253,16 @@ mentor/
 - **Rotate the chiro production password** and scrub it from git history (see Secrets).
 - **Re-auth Google Drive** (`node auth-setup.js`) and publish the OAuth consent screen
   so it stops expiring weekly. Only needed for `npm run sync`; Drive writes work via MCP.
-- `job-automation-routine.md` is the corrected v2 of Umair’s job-search prompt. It lives
-  in this repo but he runs it elsewhere, so **paste it over the old one wherever it runs**.
-  Unclear whether he has done that yet.
+- **Commit the pending `job-automation-routine.md` edit** (Step 1 connector-search
+  rewrite) — see Job-search automation routine section above.
+- **Connect the two Apify job-board connectors on claude.ai** and run a real test — see
+  More job-board MCP connectors section above. Report results back before wiring into
+  Step 1 of either routine file.
+- **Decide on the ZipRecruiter partial-listing fallback and whether to keep Dice** —
+  needs a few more real runs of data first (see Job-search automation routine section).
 - Old applications in `job-applications-archive.json` have **no full job descriptions**,
   only summaries. That data is unrecoverable (the shortlinks are dead). Only new runs of
-  the v2 routine will capture full JDs.
+  the current routine will capture full JDs.
 - Confirm Netlify deploy succeeded and get the live URL; smoke-test the Search button
   from the deployed site (not just locally).
 - `mentor/` has never been used interactively by Umair for real prep yet — only
@@ -224,3 +312,148 @@ letter, then rewrote both twice as facts got corrected.
 **Open question for next session:** the resume lists Chiro360 and DME under Decrypted Labs
 (Jun 2024 - Present). Umair has not confirmed whether those are Decrypted Labs work,
 freelance, or through another company. Verify before he submits anywhere else.
+
+### 2026-09-15/16 — Job-search routine reworked to Job-Info-only, connector research
+
+Umair said the routine's actual job — generating a Resume/Cover Letter Doc per posting —
+wasn't what he wanted. His real workflow: the cloud routine finds jobs and saves the
+posting; he pulls that into this repo to generate the resume/cover letter only when he's
+actually applying. Rewrote both routine files around that:
+
+1. `job-automation-routine.md` → v3, then v4. Dropped Resume/Cover Letter file creation
+   entirely (Step 4 went from 3 files to 1). Added apply-link resolution (follow
+   shortlinks/redirects, record both, flag dead/unresolved links) to Step 2. v4 rewired
+   Step 1 to search the Indeed/Dice/ZipRecruiter connectors directly via `search_jobs`
+   before falling back to site search, since connector APIs run server-side and bypass a
+   network block that turned out to affect every site-search fallback.
+2. `job-automation-routine-pakistan.md` created (didn't exist in the repo before — only
+   pasted into chat previously). Same Job-Info-only rework, dropped the "read base resume
+   from Personal Information" step since there's no resume to generate here anymore.
+3. Committed and pushed both (`e131838`) along with an unrelated pending HANDOFF.md update
+   and a deleted `psychable-application-answers.md`.
+4. Ran the reworked remote routine for real. Confirmed a **platform bug**: the
+   Settings → Capabilities domain allowlist does not actually reach the routine's sandbox —
+   every site-search fallback still hit a network block, only the three connector APIs
+   worked. Real yield was 5 jobs, not 10, with 2 of those correctly flagged as sketchy
+   (MRoads, Softforms) rather than scored clean.
+5. Umair wants more volume since he's applying aggressively now. Researched additional
+   job-board MCP options: official claude.ai connectors beyond Indeed/Dice/ZipRecruiter
+   are unconfirmed; found two Apify-hosted actors (Rozee.pk scraper, LinkedIn+Glassdoor+
+   ZipRecruiter aggregator) reachable via Apify's MCP gateway. Flagged cost ($50/1,000 for
+   the aggregator vs $1.60/1,000 for Rozee.pk) and trust caveats (both 0.0 rated,
+   low-usage, community-maintained) before recommending. Added the generic Apify MCP
+   server locally in Claude Code (`claude mcp add apify`) for testing in this repo — does
+   not affect the claude.ai cloud routine, which needs the two scoped URLs added as
+   *custom connectors on claude.ai itself* (Umair's action, still pending, needs Apify
+   OAuth). Explicitly ruled out auto-apply/form-filling MCP tools (LinkedIn Easy Apply
+   etc. via browser automation) as too much ToS/ban risk for an unattended routine.
+
+**Open for next session:** commit the pending v4 diff to `job-automation-routine.md`;
+confirm whether Umair connected the two Apify connectors on claude.ai and what a real
+test run returned; decide on the ZipRecruiter-partial-listing fallback and Dice
+keep/drop once a few more runs give more data.
+
+### 2026-09-16 — Drive cleanup, target raised to 20, backfilled short Job Info files
+
+Three things, all in Google Drive plus two routine-file edits (uncommitted, see below).
+
+1. **Deleted job folders older than 20 days** (cutoff 2026-08-26) from both
+   "Job Applications/Remote/" and "Job Applications/Pakistan/". 22 of 34 trashed
+   cleanly. **12 were blocked by a permission classifier** ("Unverifiable Deletion
+   Scope" — reads as a bulk-delete throttle, not a hard rule) and are still sitting in
+   Drive: Remote — Nexxt Ideas, Lemon.io. Pakistan — Q-Solutions, Smart Working
+   Solutions, Volga Partners, Yellow Squad Inc, Dr Hud, BearPlex, Appicoders Inc, The
+   Services Tree Enterprises, Progatix, COLOR STUDIO PROFESSIONAL. All dated Aug 07-15,
+   same criteria as the ones that succeeded — Umair needs to delete these manually or
+   grant a permission rule for bulk Drive deletes.
+2. **Both routine files' Step 1 changed from "FIND 10" to "FIND 20"** — Umair is in
+   high-volume application mode now. `job-automation-routine-pakistan.md` is already
+   committed at this new target; **`job-automation-routine.md` has this change
+   uncommitted, stacked on top of the also-still-uncommitted v4 Step-1-connector-search
+   diff from the previous session** — both need reviewing and committing together.
+3. **Backfilled 6 short-form Job Info files that predated the "capture full JD"
+   fix**, using the Indeed connector's `search_jobs` + `get_job_details` (re-finding
+   each posting by company+title since the original Indeed shortlinks 403/404 on
+   direct WebFetch — Indeed itself blocks non-browser fetches, this is not the sandbox
+   network bug from the earlier session, that was specific to the cloud-routine's
+   sandbox; this local session has real internet access, it's the target sites doing
+   the blocking). Old docs trashed, new `text/plain` docs created in the same folders
+   (Drive's `update_file` still only changes title/parentId, never content — confirmed
+   again this session, so replace-via-trash-and-recreate remains the only path):
+   - **Zeta Corp** (Pakistan) — full JD revealed **2 required application questions**
+     ("current salary?" / "expected salary?") that the original short scrape missed
+     entirely. Have real numbers ready before applying.
+   - **Outsource Origin Limited** (Pakistan) — full JD revealed **8 required
+     application questions** (AI/RAG experience, tool-calling, Meta/Google Ads API,
+     comfort with a 2-3 person team, 12pm-9pm on-site hours, join within 1-2 days,
+     salary confirmation) — the original scrape only had "must join within 1-2 days."
+     This is not a resume-and-letter-only application.
+   - **Dolphin Advanced** (Pakistan) — full JD confirms Flutter/React Native mobile
+     dev is a core "What You'll Do" item, not optional, plus fintech/POS experience
+     and 5-8 years — sharper gaps than the original short version implied. Its salary
+     field is a broken placeholder ("Rs2.00 - Rs3.00 per year"), not real data.
+   - **Hbox Digital** (Pakistan) — full JD confirms Adonis.js + React Native are both
+     explicitly required, plus native Android/iOS preferred — more mobile-skewed than
+     the short version suggested.
+   - **Softvira** (Pakistan) — full JD confirms this is genuinely code-first agent
+     building ("We want a builder who can code... not someone who only has experience
+     using ready-made AI tools"), strengthens the case, no new gaps. Apply by emailing
+     careers@softvira.com with GitHub/portfolio links attached — no formal questions.
+   - **CloudLab Technologies** (Pakistan/remote-eligible) — full JD confirms
+     remote-first plus concrete perks (MacBook Pro, health cover for family, annual
+     bonus), and that Node.js counts as an alternative to FastAPI, softening that gap.
+   **Could not backfill** (tried, no luck — reported to Umair as-is rather than
+   guessed): **BitMEX**'s Greenhouse posting now shows "no current openings" (likely
+   filled/closed — deprioritize). Tether Operations (404), Yooli/WeWorkRemotely (403),
+   CREDIX/beincrypto (403), Cosuno/Personio (404) all blocked direct WebFetch and
+   aren't Indeed-sourced so the connector couldn't help either — status unconfirmed,
+   Umair should open these links himself before investing application time. amIT
+   Global Solutions, Ecom Elite By SMG, Connect Logistics, and Retail online are
+   Indeed-sourced but didn't turn up via the connector's re-search (likely expired off
+   Indeed's live index) — their original short Job Info is all that exists for these
+   four, full JD is not recoverable.
+
+**Also corrected:** Psychable is not an open task — Umair recorded and submitted the
+Q8 video roughly two weeks ago, all 8 answers went in, no reply yet. See the Psychable
+section above.
+
+**Open for next session:** commit the two stacked uncommitted diffs on
+`job-automation-routine.md` (v4 connector-search rewrite + FIND 20 change); Umair to
+manually clear the 12 Drive folders the permission classifier blocked; consider
+whether the "capture full JD before scoring" step should have caught these gaps
+originally — it was added specifically to prevent this class of problem (see the v1→v2
+changelog in `job-automation-routine.md`) but several 09-03/09-04 folders still
+predate that fix.
+
+### 2026-09-16 (cont.) — Nemonx application, real profile correction, output-location fix
+
+Umair corrected his own profile mid-session: NestJS is ~1 year of real production work
+(not "familiar, not primary") across two live client SaaS products during the Decrypted
+Labs period — Chiro360 (chiropractic billing CRM, he designed the core CPT/visit billing
+model) and DME (durable medical equipment billing CRM, white-labeled for two clients).
+Prisma is ~3 years, PostgreSQL ~1-1.5 years as his primary relational DB. Corrected the
+profile in `job-automation-routine.md` and in `user-umair-profile.md` (memory). Bumped
+Nemonx's Job Info match score 8→9/10 and rewrote its GAPS section to match reality —
+also softened one claim rather than inflating it: no real SAML/OIDC experience exists,
+so the resume frames it as "strong OAuth2/JWT/RBAC foundation," not direct SAML work.
+
+Wrote `interview-storytelling-guide.md` — a reusable five-beat framework (constraint →
+system shape → the one decision that mattered → what broke → outcome) for "walk me
+through a project" interview rounds, a JD-to-project matching table, and a Nemonx-
+specific Round 1 plan built around Chiro360's billing model. One line in it is
+deliberately left for Umair to fill by hand: the actual schema/design tradeoff on the
+billing ledger — a real memory only he has, not something to write from outside.
+
+**Mistake made and corrected:** generated the Nemonx Resume/Cover Letter as Google Docs
+in the Job Info Drive folder, same as the old (now-abandoned) workflow. Umair caught it
+immediately — Drive must only ever hold Job Info, resume/cover letter generation is
+local-only, per application, in `output/<Remote|Pakistan>/<Company> - <Job Title>/`.
+Deleted the two Drive docs and regenerated them as real `.docx` files instead, using the
+existing `build-resume.js`/`build-cover-letter.js` pipeline (JSON data files, `--output`
+pointing at the new folder) rather than writing plain text. See the RULE banner at the
+top of this file — this must not happen again for any future job.
+
+**Open for next session:** confirm with Umair whether Chiro360/DME are formally
+Decrypted Labs work or a separate arrangement before any more resumes go out naming
+that employer. Fill in the real billing-ledger schema decision in
+`interview-storytelling-guide.md`'s Nemonx section before that interview happens.

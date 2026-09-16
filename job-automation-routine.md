@@ -1,15 +1,12 @@
-# Job Application Automation Routine (v3) — Job Info Only
+# Job Application Automation Routine (v4) — Job Info Only
 
-Corrected 2026-09-15. Replaces v2.
+Corrected 2026-09-16. Replaces v3.
 
-**What changed and why:** v2 generated a Resume and Cover Letter Google Doc for every
-qualifying job, using a hardcoded profile baked into this file as source of truth. That
-duplicated work better done in the resume-builder repo, and the hardcoded profile here
-drifted out of sync with what the repo actually generates. This routine now does exactly
-one thing: find postings, verify the source is real, and save a detailed Job Info file
-to Drive. Resume and cover letter generation is no longer part of this routine — when
-Umair is ready to apply, he feeds the Job Info file into the resume-builder repo to
-generate the resume and cover letter for that specific application.
+**What changed and why:** v3 dropped resume/cover-letter generation to focus this
+routine on capturing verified Job Info only (see the v2→v3 entry below). v4 adds the
+Dice and ZipRecruiter connectors, which are now connected alongside Indeed, so Step 1
+can pull structured listings via `search_jobs` instead of relying only on fetching job
+board pages.
 
 ---
 
@@ -60,13 +57,16 @@ write resumes or cover letters.
 **Skills**
 - Frontend: Next.js (App Router), React, TypeScript, Redux Toolkit, RTK Query,
   React Query, Tailwind CSS, Shadcn UI, Framer Motion, GSAP
-- Backend: Node.js, Express.js (MVC), REST APIs, GraphQL, Stripe webhooks, cron jobs,
-  WebSockets, NestJS (familiar, not primary)
+- Backend: Node.js, NestJS (~1 year production, not just "familiar" - core of two live
+  client SaaS products, see note below), Express.js (MVC), REST APIs, GraphQL, JWT/
+  OAuth2/RBAC, Stripe webhooks, cron jobs, WebSockets
 - AI / LLM: Claude API, OpenAI, OpenRouter, LangChain, LangGraph, RAG, pgvector, MCP,
   AI agents, prompt engineering
-- Database: MongoDB (indexing, execution plans, aggregation pipelines), PostgreSQL,
-  Supabase, Prisma ORM, Redis
-- DevOps: Vercel, DigitalOcean, PM2, Nginx, Git, Docker
+- Database: PostgreSQL (~1-1.5 years, primary DB of choice for relational/production
+  work), Prisma ORM (~3 years), MongoDB (indexing, execution plans, aggregation
+  pipelines), Supabase, Redis
+- DevOps: AWS (EC2, S3, Textract - via DME), Terraform (recent, hands-on, not deep yet),
+  Vercel, DigitalOcean, PM2, Nginx, Git, Docker
 - Testing: Jest, Cypress
 - Other: WordPress headless CMS, Shopify, Web3 integration
 
@@ -79,6 +79,20 @@ below this; score it and let Umair decide. Hard floor is $2,000/month.
 
 > **Note on dates.** LightNX and the RAG platform are real and live with users, confirmed
 > 2026-09-03. Decrypted Labs is **Jun 2024**, not 2021. Never write 2021.
+
+> **Note on NestJS/Prisma/PostgreSQL, corrected 2026-09-16.** The old profile called
+> NestJS "familiar, not primary" - that undersold it. Umair has been writing NestJS in
+> production for about a year, as the backend of two live client SaaS products:
+> Chiro360 (a chiropractic auto-accident billing CRM - he designed the core CPT/visit
+> billing model, Prisma + PostgreSQL, server-side permission guards, AuditTrail model,
+> 76 Playwright E2E tests) and DME (a durable medical equipment billing CRM - one
+> NestJS/Next.js codebase run as two white-label instances for two clients on isolated
+> databases, AWS Textract OCR + S3, EC2/pm2/GitHub Actions deploys, which he handles).
+> Prisma is ~3 years of real use. PostgreSQL is ~1-1.5 years and his primary relational
+> DB of choice for production work, not a secondary option. One still-open question:
+> whether Chiro360/DME are formally Decrypted Labs work, freelance, or another
+> arrangement - confirm with Umair before it goes on a resume if it hasn't been
+> confirmed yet in a given session.
 
 ## JOB FOCUS - search ONLY these roles
 - Full Stack Developer (Remote)
@@ -106,13 +120,27 @@ Skip any match entirely, create no files.
 Remote jobs go in "Job Applications/Remote/" only.
 Pakistan jobs go in "Job Applications/Pakistan/" only. Never mix.
 
-## STEP 1 - FIND 10 REMOTE JOBS
+## STEP 1 - FIND 20 REMOTE JOBS
 
-Postings from the last 48 hours. Sites: weworkremotely.com, remoteok.com,
-arc.dev/remote-jobs, himalayas.app, linkedin.com/jobs, remote.co, jobs.ashbyhq.com,
-wellfound.com
+Postings from the last 48 hours.
 
-Search terms:
+**Search connectors first** — Indeed, Dice, and ZipRecruiter are connected and expose a
+`search_jobs` tool that returns structured listings directly, which is more reliable
+than fetching a job board's page and hoping the content comes through intact:
+- Indeed connector: `search_jobs`, then `get_job_details` on anything that looks like a
+  match. `get_company_data` if the company is unfamiliar and salary/legitimacy needs a
+  second look.
+- Dice connector: `search_jobs`, `get_company` for the same reason. Dice skews
+  contract/staffing, so expect more agency-posted roles — check who the actual employer
+  is before scoring.
+- ZipRecruiter connector: `search_jobs`. Skews US-based, so apply the LOCATION RULES
+  strictly — a lot of its "remote" listings are US-only in practice, not just in name.
+
+**Then supplement with site search** for boards without a connector: weworkremotely.com,
+remoteok.com, arc.dev/remote-jobs, himalayas.app, linkedin.com/jobs, remote.co,
+jobs.ashbyhq.com, wellfound.com
+
+Search terms (use for both connector queries and site search):
 - "Full Stack Developer Remote 2026"
 - "Next.js React Developer Remote"
 - "Full Stack Engineer AI features Remote"
@@ -218,6 +246,15 @@ folder and what it needs.]
 ---
 
 ## Changelog
+
+### v3 to v4
+1. **Step 1 now searches the Dice and ZipRecruiter connectors directly**, via their
+   `search_jobs` tools, alongside the existing Indeed connector. Site search (weworkremotely,
+   remoteok, arc.dev, etc.) is now the fallback for boards without a connector, not the
+   only method.
+2. Noted that ZipRecruiter skews US-based even on listings marked "remote," and Dice
+   skews staffing/agency-posted — both need the existing LOCATION RULES and a look at
+   the actual employer applied strictly, not waived because the source has a connector.
 
 ### v2 to v3
 1. **Removed resume and cover letter generation entirely.** That work now happens in

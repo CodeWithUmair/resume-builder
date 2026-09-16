@@ -52,7 +52,7 @@ Open Google Drive. Read all folder names inside "Job Applications/Pakistan/".
 Extract "[Company] - [Job Title]" from each folder name. Store as "already applied".
 Any job matching this list later — skip entirely. No files created.
 
-## STEP 1 - FIND 10 JOBS
+## STEP 1 - FIND 20 JOBS
 
 Search for job postings from the last 48 hours.
 Sites: rozee.pk, mustakbil.com, linkedin.com/jobs, glassdoor.com, indeed.com, bayt.com
