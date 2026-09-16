@@ -11,6 +11,20 @@
 > created as Drive Docs) and corrected immediately — the Drive docs were deleted and
 > redone as local `.docx` files. Do not repeat that mistake for any future job.
 
+> ## RULE, added 2026-09-16: every job folder gets its own interview storytelling guide.
+> `interview-storytelling-guide.md` used to live at the repo root as one shared file.
+> Umair wants each job self-contained instead: `output/<Remote|Pakistan>/<Company> -
+> <Job Title>/interview-storytelling-guide.md`, alongside that job's `resume.docx` and
+> `cover-letter.docx`. It moved out of the root entirely (deleted there, not copied) —
+> there is no shared master file anymore. When starting a new job's application
+> materials, create a fresh copy in that job's folder containing: the general
+> five-beat framework + Umair's real project write-ups (hook / optional backstory /
+> decision / scar / result — reuse the content from an existing job's copy, e.g.
+> Nemonx's, as the template, don't reinvent it each time) plus a "Round [N] plan"
+> section specific to that job's actual interview process and JD emphasis. Because
+> `output/` is git-ignored, these never get committed or pushed — same as the docx
+> files, this is local-only, per Umair's review, not shared.
+
 > **Purpose of this file:** single source of truth for what this repo is, what's been
 > done, and what's next — so a new chat session can pick up with full context instead
 > of re-deriving it. **Update the "Session Log" section at the end of every work

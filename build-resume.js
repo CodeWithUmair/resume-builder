@@ -59,11 +59,16 @@ const GRAY  = "555555";
 const BLUE  = "1155CC";
 
 // ── Builder helpers ─────────────────────────────────────────────
-const gap = (before = 0, after = 100) =>
+// Spacing values tightened 2026-09-16 to keep a typical resume (6+2 experience
+// bullets, 2 projects, skills, education) on one page. Font sizes were left
+// alone on purpose — shrinking type hurts readability more than tightening
+// whitespace costs. If content grows enough to spill again, trim a bullet
+// before shrinking these further.
+const gap = (before = 0, after = 60) =>
   new Paragraph({ spacing: { before, after }, children: [] });
 
 const sectionHeader = (text) => new Paragraph({
-  spacing: { before: 180, after: 40 },
+  spacing: { before: 130, after: 25 },
   border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: "888888", space: 2 } },
   children: [new TextRun({ text: text.toUpperCase(), font: FONT, size: 22, bold: true, color: BLACK })]
 });
@@ -80,13 +85,13 @@ const bulletPara = (text) => {
   });
   return new Paragraph({
     numbering: { reference: "bullets", level: 0 },
-    spacing: { before: 30, after: 30 },
+    spacing: { before: 15, after: 15, line: 250 },
     children: runs
   });
 };
 
 const jobHeader = (company, role, dates) => new Paragraph({
-  spacing: { before: 140, after: 30 },
+  spacing: { before: 90, after: 20 },
   tabStops: [{ type: TabStopType.RIGHT, position: 9200 }],
   children: [
     new TextRun({ text: company, font: FONT, size: 21, bold: true, color: BLACK }),
@@ -97,7 +102,7 @@ const jobHeader = (company, role, dates) => new Paragraph({
 
 const skillRow = (label, value) => value ? new Paragraph({
   numbering: { reference: "bullets", level: 0 },
-  spacing: { before: 28, after: 28 },
+  spacing: { before: 14, after: 14, line: 240 },
   children: [
     new TextRun({ text: label + ": ", font: FONT, size: 20, bold: true, color: BLACK }),
     new TextRun({ text: value, font: FONT, size: 20, color: BLACK })
@@ -147,14 +152,14 @@ const children = [
       }),
     ]
   }),
-  gap(0, 80),
+  gap(0, 50),
 ];
 
 // Summary
 if (summary) {
   children.push(sectionHeader("Summary"));
   children.push(new Paragraph({
-    spacing: { before: 70, after: 50 },
+    spacing: { before: 40, after: 30 },
     children: [new TextRun({ text: summary, font: FONT, size: 20, color: BLACK })]
   }));
 }
@@ -187,7 +192,7 @@ if (projects.length) {
   children.push(sectionHeader("Key Projects"));
   projects.forEach(({ name: pName, tech, bullets }) => {
     children.push(new Paragraph({
-      spacing: { before: 120, after: 25 },
+      spacing: { before: 80, after: 15 },
       children: [
         new TextRun({ text: pName, font: FONT, size: 21, bold: true, color: BLACK }),
         tech ? new TextRun({ text: "  |  " + tech, font: FONT, size: 19, italics: true, color: GRAY }) : new TextRun("")
@@ -201,7 +206,7 @@ if (projects.length) {
 if (education) {
   children.push(sectionHeader("Education"));
   children.push(new Paragraph({
-    spacing: { before: 80, after: 30 },
+    spacing: { before: 40, after: 0 },
     children: [new TextRun({ text: education, font: FONT, size: 20, color: BLACK })]
   }));
 }
@@ -224,7 +229,7 @@ const doc = new Document({
     properties: {
       page: {
         size: { width: 12240, height: 15840 },
-        margin: { top: 1080, right: 720, bottom: 1080, left: 720 }
+        margin: { top: 620, right: 620, bottom: 620, left: 620 }
       }
     },
     children
