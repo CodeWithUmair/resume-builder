@@ -1,41 +1,31 @@
 # HANDOFF — resume-builder repo
 
-> ## BLOCKED, as of 2026-09-17: local repo is 1 commit ahead of origin, push failing.
-> Commit `9b0eda9` ("Drop Apify job-board tools from both routines") is committed
-> locally but **not pushed** — `git push origin main` fails every time with:
-> `remote: Permission to CodeWithUmair/resume-builder.git denied to
-> momalnaz796-create` (403). The repo's git config is correct (remote is
-> `CodeWithUmair/resume-builder.git`, last commit author is `CodeWithUmair
-> <codewithumair867@gmail.com>`) — this is a **Windows Credential Manager** problem,
-> not a repo problem: some cached credential is authenticating as the wrong GitHub
-> account (`momalnaz796-create`), not `CodeWithUmair`. Umair was walked through
-> Credential Manager → Windows Credentials → Generic Credentials and found four
-> relevant entries: `gh:github.com:` (blank username, modified "Today" — the
-> suspected bad one, likely created during the failed push attempts),
-> `gh:github.com:CodeWithUmair` (modified 9/8/2026, looks correct),
-> `git:https://github.com` (username CodeWithUmair, modified 8/23/2026, looks
-> correct), and an unrelated `virtualapp/didlogical` entry. He was told to remove
-> only the blank-username `gh:github.com:` entry and retry — **as of this session
-> ending, it's unconfirmed whether that fixed it**, since the session ended right
-> after giving that instruction. **Next session: check whether `9b0eda9` reached
-> origin (`git log origin/main --oneline -1`); if still behind, walk through the
-> Credential Manager fix again** (removing that entry should force a fresh browser
-> login as CodeWithUmair on the next push) rather than just retrying the push blindly
-> — retrying without changing the credential will keep failing identically.
+> ## RESOLVED, 2026-09-17: push blocker fixed, `9b0eda9` and `8653591` both on origin.
+> The Windows Credential Manager fix worked — removing the blank-username
+> `gh:github.com:` entry forced a fresh login as `CodeWithUmair`. Confirmed this
+> session: `git status` shows "up to date with origin/main", and
+> `git log origin/main --oneline -1` matches local HEAD (`8653591`). No push issue
+> remains. (Previous banner text describing the 403/credential mixup removed — kept
+> only as history in the Session Log entry below if ever needed again.)
 
-> ## RULE, added 2026-09-17: no Apify-based tools in either routine, even if attached.
+> ## RESOLVED, 2026-09-17: Apify tools confirmed removed from both routines on claude.ai.
 > A "Job Board Aggregator" (LinkedIn/Glassdoor/ZipRecruiter) and a "Rozee.pk Jobs"
-> scraper got connected directly on claude.ai after the v4 remote routine shipped,
-> without a corresponding instructions update. Two real runs (2026-09-16, 2026-09-17)
-> showed they're not worth it: LinkedIn is network-blocked in that environment so the
-> aggregator returned empty description fields (unusable — Step 2 requires a real
-> verbatim JD), Rozee.pk surfaced nothing fresh either run, and both actors burned
-> through Apify's $5/month free tier in a single day. Both routine `.md` files now
-> explicitly rule these out in Step 1 (v5 remote, v4 Pakistan). **Still needed on
-> claude.ai itself (Umair's action):** remove "Job Board Aggregator" and "Rozee.pk
-> Jobs" from each routine's "Runs with" tool list, and consider disconnecting the
-> Apify custom connector from Settings → Connectors entirely if nothing else uses it,
-> so a future run can't accidentally rack up Apify usage again.
+> scraper had been connected directly on claude.ai after the v4 remote routine
+> shipped. Two real runs (2026-09-16, 2026-09-17) showed they're not worth it:
+> LinkedIn is network-blocked in that environment so the aggregator returned empty
+> description fields (unusable — Step 2 requires a real verbatim JD), Rozee.pk
+> surfaced nothing fresh either run, and both actors burned through Apify's
+> $5/month free tier in a single day. Both routine `.md` files rule these out in
+> Step 1 (v5 remote, v4 Pakistan — Pakistan's version number is lower only because
+> its file started its own v1/v2/v3 lineage later than Remote's, not because it's
+> missing anything; both got the same 2026-09-17 correction). Umair confirmed via
+> screenshot this session that neither routine's "Runs with" tool list includes
+> Job Board Aggregator or Rozee.pk Jobs anymore — Remote runs with Google
+> Drive/Indeed/Dice/ZipRecruiter, Pakistan runs with Google Drive/Indeed only.
+> **One optional cleanup still open:** disconnect the Apify custom connector
+> entirely from Settings → Connectors if nothing else uses it, so it can't
+> accidentally get reattached later. Not urgent — routines no longer reference it
+> either in tool list or Step 1 instructions.
 
 > ## RULE, added 2026-09-16: never create Resume or Cover Letter files in Google Drive.
 > Google Drive only ever holds **Job Info** files (via the cloud routine). When
@@ -54,11 +44,13 @@
 > <Job Title>/interview-storytelling-guide.md`, alongside that job's `resume.docx` and
 > `cover-letter.docx`. It moved out of the root entirely (deleted there, not copied) —
 > there is no shared master file anymore. When starting a new job's application
-> materials, create a fresh copy in that job's folder containing: the general
-> five-beat framework + Umair's real project write-ups (hook / optional backstory /
-> decision / scar / result — reuse the content from an existing job's copy, e.g.
-> Nemonx's, as the template, don't reinvent it each time) plus a "Round [N] plan"
-> section specific to that job's actual interview process and JD emphasis. Because
+> materials, **use the `interview-storytelling` skill** (user-level, at
+> `~/.claude/skills/interview-storytelling/`, deliberately outside this public repo).
+> It holds the fixed CHOICE formula (Context, Hard part, Options, I did, Consequence,
+> Evolve), the fixed 9-section guide template, the 4-level drill ladder, and
+> `story-bank.md`: Umair's stories verified against the real repos, with `CONFIRM:` on
+> anything unverified. Guides pull facts only from the story bank. (Updated 2026-09-17:
+> this replaces the old "copy Nemonx's guide as the template" instruction.) Because
 > `output/` is git-ignored, these never get committed or pushed — same as the docx
 > files, this is local-only, per Umair's review, not shared.
 
@@ -304,11 +296,6 @@ mentor/
 - **Rotate the chiro production password** and scrub it from git history (see Secrets).
 - **Re-auth Google Drive** (`node auth-setup.js`) and publish the OAuth consent screen
   so it stops expiring weekly. Only needed for `npm run sync`; Drive writes work via MCP.
-- **Commit the pending `job-automation-routine.md` edit** (Step 1 connector-search
-  rewrite) — see Job-search automation routine section above.
-- **Connect the two Apify job-board connectors on claude.ai** and run a real test — see
-  More job-board MCP connectors section above. Report results back before wiring into
-  Step 1 of either routine file.
 - **Decide on the ZipRecruiter partial-listing fallback and whether to keep Dice** —
   needs a few more real runs of data first (see Job-search automation routine section).
 - Old applications in `job-applications-archive.json` have **no full job descriptions**,
@@ -547,3 +534,64 @@ routines' "Runs with" lists on claude.ai (can't be done from here) and considere
 disconnecting the Apify connector entirely. Decide whether to actually apply to
 Softvira (it's email-based, so Umair has to send it himself) and whether to build
 Zeta Corp or another Pakistan job next.
+
+### 2026-09-17 (cont.) — Confirmed push unblocked, Apify tools confirmed removed
+
+No code changes. Two things closed out from the open threads above:
+
+1. **Push blocker resolved.** Umair's Credential Manager fix worked — `git status`
+   now shows "up to date with origin/main" and `origin/main`'s tip matches local
+   HEAD. `9b0eda9` and `8653591` both reached origin. Removed the old BLOCKED banner
+   at the top of this file, replaced with a RESOLVED note.
+2. **Apify tools confirmed removed from both routines' "Runs with" lists**, via
+   screenshots Umair shared of each routine's settings panel: Remote shows Google
+   Drive/Indeed/Dice/ZipRecruiter, Pakistan shows Google Drive/Indeed — neither lists
+   Job Board Aggregator or Rozee.pk Jobs. Updated the RULE banner to RESOLVED. Only
+   remaining optional step is disconnecting the Apify custom connector entirely from
+   Settings → Connectors, which Umair hasn't confirmed either way — not urgent since
+   nothing references it anymore.
+3. Umair also asked why Remote is v5 and Pakistan is v4 — clarified this is expected,
+   not drift: Pakistan's `.md` file started its own v1 lineage later than Remote's, so
+   its version count is naturally one behind even though both got the identical
+   2026-09-17 Apify-exclusion correction. Worth remembering if this question comes up
+   again — the version numbers will keep diverging over time even while the two
+   files stay in sync content-wise.
+
+**Open for next session:** the two removed BLOCKED/RULE banners' underlying open
+items (ZipRecruiter partial-listing fallback, Dice keep/drop decision, Softvira
+send-it-yourself follow-up, next Pakistan job to build) are unchanged — see the
+2026-09-17 entry above and the Known open threads section.
+
+### 2026-09-17 (cont.) — Interview storytelling formula rebuilt as a skill, 3 guides rewritten
+
+Umair said the previous guides were too long, read like essays about method, and did
+not sound like him. Rebuilt the approach:
+
+1. **New user-level skill `interview-storytelling`** (`~/.claude/skills/`, kept out of
+   this public repo because the story bank describes client incidents). `SKILL.md` =
+   the CHOICE formula (2-minute spoken answer), the 4-level drill ladder interviewers
+   follow, behavioral themes, voice rules, and a fixed 9-section guide template.
+   `story-bank.md` = 11 stories verified against the real repos (chiro, DME, ai-sdr-agent,
+   automation-tool/PinFlow, lightnx, mentor/), each with source and `CONFIRM:` items.
+   Research basis: techinterview.org, Tech Interview Handbook (senior), unicorn.io 2026.
+2. **Rewrote all three per-job guides** (Nemonx, Softvira, Automation Agency) on that
+   template, ~240-300 lines each, spoken scripts in simple English, no placeholders.
+3. **Verification found claims in existing resumes/guides that would not survive a
+   follow-up.** Most important:
+   - AI SDR agent is a *linear* 3-node LangGraph (findLeads -> researchLeads ->
+     writeEmails), no checkpointer, and a human approves every email. Resumes saying
+     "no human in the loop" / "handles real campaigns for clients" are wrong or unverified.
+     The old guide's "state machine that prevents duplicate side effects" was also wrong:
+     the LinkedIn cron can double-send on overlap. Guides now present this honestly plus
+     the fix.
+   - LightNX code is an RFQ/quotation/proposal portal with user/admin roles, not
+     "real-time asset tracking with Mapbox/WebSockets" as `lib/generate.js` claims.
+   - RAG platform "sub-500ms at production load" has no source; no repo verified.
+   - The June Automation Agency resume still has the 2021 date and says "OpenAI" for the
+     SDR agent (code uses Claude).
+
+**Open for next session:** Umair to answer the `CONFIRM:` items in the story bank
+(employer attribution for Chiro360/DME, SDR real usage, LightNX description, RAG details,
+Stripe idempotency mechanism, Jest experience, PinFlow Pinterest approval status).
+Then correct `lib/generate.js` PROFILE and `job-automation-routine.md` profile so new
+resumes stop repeating the unverified claims.
