@@ -2,7 +2,6 @@ node_modules/
 credentials.json
 .auth-token.json
 .env
-output/
 test-output/
 *.tmp
 .mentor-progress.json
